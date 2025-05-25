@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React from 'react';
 import {AnimatePresence, motion} from 'framer-motion';
 
 import type {GameArea, MandragoraPiece} from '../types';
@@ -22,6 +22,9 @@ type HexagonalBoardProps = {
     opponent: DOMRect | null;
     player: DOMRect | null;
   };
+  boardRef: React.RefObject<HTMLDivElement>;
+  hexPositions: Record<number, DOMRect>;
+  isPlayerTurn: boolean;
 };
 
 const HexagonalBoard: React.FC<HexagonalBoardProps> = ({
@@ -31,22 +34,10 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({
   recommendedMoves = [],
   movingPieces = [],
   basePositions,
+  boardRef,
+  hexPositions,
+  isPlayerTurn,
 }) => {
-  const [hexPositions, setHexPositions] = useState<Record<number, DOMRect>>({});
-  const boardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (boardRef.current) {
-      const newPositions: Record<number, DOMRect> = {};
-      const hexElements = boardRef.current.querySelectorAll('[data-hex-id]');
-      hexElements.forEach(hex => {
-        const id = parseInt(hex.getAttribute('data-hex-id') || '0');
-        newPositions[id] = hex.getBoundingClientRect();
-      });
-      setHexPositions(newPositions);
-    }
-  }, [areas]);
-
   // Calculate positions for a hexagonal layout
   const boardLayout = {
     topRow: [
@@ -68,30 +59,8 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({
     ].filter(Boolean) as GameArea[],
   };
 
-  const getRecommendationStyles = (areaId: number) => {
-    const recommendation = recommendedMoves.find(
-      move => move.areaId === areaId,
-    );
-    if (!recommendation) return '';
-
-    // Different glow effects based on rank
-    switch (recommendation.rank) {
-      case 1:
-        return 'ring-4 ring-yellow-400/50 shadow-lg shadow-yellow-400/30';
-      case 2:
-        return 'ring-3 ring-yellow-400/30 shadow-md shadow-yellow-400/20';
-      case 3:
-        return 'ring-2 ring-yellow-400/20 shadow-sm shadow-yellow-400/10';
-      default:
-        return 'ring-1 ring-yellow-400/10';
-    }
-  };
-
   return (
-    <div
-      className="relative mx-auto w-full min-w-[900px] max-w-[1400px]"
-      ref={boardRef}
-    >
+    <div className="relative mx-auto w-full max-w-[1400px]" ref={boardRef}>
       <div className="relative w-full" style={{aspectRatio: '2/1'}}>
         {/* Hexagonal grid */}
         <div className="flex h-full flex-col items-center justify-center">
@@ -104,7 +73,6 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({
                 isValidMove={isValidMove(area.id)}
                 onClick={() => onAreaClick(area.id)}
                 color="green"
-                recommendationStyles={getRecommendationStyles(area.id)}
                 recommendedMoves={recommendedMoves}
               />
             ))}
@@ -119,7 +87,6 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({
                 isValidMove={isValidMove(area.id)}
                 onClick={() => onAreaClick(area.id)}
                 color="brown"
-                recommendationStyles={getRecommendationStyles(area.id)}
                 recommendedMoves={recommendedMoves}
               />
             ))}
@@ -134,7 +101,6 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({
                 isValidMove={isValidMove(area.id)}
                 onClick={() => onAreaClick(area.id)}
                 color="blue"
-                recommendationStyles={getRecommendationStyles(area.id)}
                 recommendedMoves={recommendedMoves}
               />
             ))}
@@ -143,100 +109,111 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({
       </div>
 
       {/* Animated pieces layer */}
-      <AnimatePresence>
-        {movingPieces.map((movingPiece, index) => {
-          const fromPos = hexPositions[movingPiece.fromArea];
-          const toArea = movingPiece.toArea;
-
-          // Get the target position based on whether it's going to a base or another hex
-          let toPos: DOMRect | null = null;
-          if (toArea === 0 && basePositions.player) {
-            toPos = basePositions.player;
-          } else if (toArea === 9 && basePositions.opponent) {
-            toPos = basePositions.opponent;
-          } else {
-            toPos = hexPositions[toArea];
-          }
-
-          if (!fromPos || !toPos) return null;
-
-          const boardRect = boardRef.current?.getBoundingClientRect();
-          if (!boardRect) return null;
-
-          // Calculate positions accounting for the piece's dimensions
-          const pieceWidth = fromPos.width * 0.25;
-          const pieceHeight = pieceWidth * (3 / 2); // Since aspect ratio is 2/3
-
-          // Calculate start position - adjust to start from the pieces container area
-          const startX = fromPos.left - boardRect.left + fromPos.width * 0.5;
-          const startY = fromPos.top - boardRect.top + fromPos.height * 0.7; // Move down to pieces area
-
-          // Calculate end position
-          const endX = toPos.left - boardRect.left + toPos.width * 0.5;
-          let endY;
-          if (toArea === 0 || toArea === 9) {
-            // For bases, aim for the content area (about 1/3 down from the top, after the header)
-            endY = toPos.top - boardRect.top + toPos.height * 0.33;
-          } else {
-            // For hex areas, aim for the pieces area
-            endY = toPos.top - boardRect.top + toPos.height * 0.7;
-          }
-
-          return (
-            <motion.div
-              key={`moving-${index}`}
-              initial={{
-                x: startX - pieceWidth / 2,
-                y: startY - pieceHeight / 2,
-                scale: 1,
-                opacity: 1,
-              }}
-              animate={{
-                x: endX - pieceWidth / 2,
-                y: endY - pieceHeight / 2,
-                scale:
-                  toArea === 0 || toArea === 9
-                    ? [1, 1.2, 0.9] // Smoother scale animation for bases
-                    : [1, 1.2, 1], // Return to original size for hex areas
-                opacity: toArea === 0 || toArea === 9 ? [1, 1, 0] : 1, // Fade out when entering base
-              }}
-              exit={{
-                opacity: 0,
-                scale: 0.8,
-                transition: {duration: 0.2},
-              }}
-              transition={{
-                duration: toArea === 0 || toArea === 9 ? 0.6 : 0.4, // Slightly faster base animation
-                delay: movingPiece.delay,
-                ease: 'easeInOut',
-              }}
-              className="pointer-events-none absolute left-0 top-0 z-50"
-              style={{
-                width: pieceWidth,
-                filter:
-                  toArea === 0 || toArea === 9
-                    ? 'brightness(1.5) drop-shadow(0 0 10px rgba(255, 255, 255, 0.5))'
-                    : 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.3))',
-              }}
-            >
-              <MandragoraPieceComponent
-                type={movingPiece.piece.type}
-                color={movingPiece.piece.color}
-              />
-            </motion.div>
-          );
-        })}
-      </AnimatePresence>
+      {renderMovingPieces({
+        movingPieces,
+        basePositions,
+        hexPositions,
+        parentRef: boardRef,
+      })}
     </div>
   );
 };
+
+export function renderMovingPieces({
+  movingPieces,
+  basePositions,
+  hexPositions,
+  parentRef,
+}: {
+  movingPieces: any[];
+  basePositions: {opponent: DOMRect | null; player: DOMRect | null};
+  hexPositions: Record<number, DOMRect>;
+  parentRef: React.RefObject<HTMLDivElement>;
+}) {
+  return (
+    <AnimatePresence>
+      {movingPieces.map((movingPiece, index) => {
+        const fromPos = hexPositions[movingPiece.fromArea];
+        const toArea = movingPiece.toArea;
+        let toPos: DOMRect | null = null;
+        if (toArea === 0 && basePositions.player) {
+          toPos = basePositions.player;
+        } else if (toArea === 9 && basePositions.opponent) {
+          toPos = basePositions.opponent;
+        } else {
+          toPos = hexPositions[toArea];
+        }
+        if (!fromPos || !toPos) return null;
+        const parentRect = parentRef.current?.getBoundingClientRect();
+        if (!parentRect) return null;
+        const pieceWidth = fromPos.width * 0.25;
+        const pieceHeight = pieceWidth * (3 / 2);
+        const startX = fromPos.left - parentRect.left + fromPos.width * 0.5;
+        const startY = fromPos.top - parentRect.top + fromPos.height * 0.7;
+        let endX;
+        if (toArea === 0 && basePositions.player) {
+          endX = toPos.left - parentRect.left + toPos.width * 0.85;
+        } else if (toArea === 9 && basePositions.opponent) {
+          endX = toPos.left - parentRect.left + toPos.width * 0.15;
+        } else {
+          endX = toPos.left - parentRect.left + toPos.width * 0.5;
+        }
+        let endY;
+        if (toArea === 0 || toArea === 9) {
+          endY = toPos.top - parentRect.top + toPos.height * 0.5;
+        } else {
+          endY = toPos.top - parentRect.top + toPos.height * 0.7;
+        }
+        return (
+          <motion.div
+            key={`moving-${index}`}
+            initial={{
+              x: startX - pieceWidth / 2,
+              y: startY - pieceHeight / 2,
+              scale: 1,
+              opacity: 1,
+            }}
+            animate={{
+              x: endX - pieceWidth / 2,
+              y: endY - pieceHeight / 2,
+              scale: toArea === 0 || toArea === 9 ? [1, 1.2, 0.9] : [1, 1.2, 1],
+              opacity: toArea === 0 || toArea === 9 ? [1, 1, 0] : 1,
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.8,
+              transition: {duration: 0.2},
+            }}
+            transition={{
+              duration: toArea === 0 || toArea === 9 ? 0.6 : 0.4,
+              delay: movingPiece.delay,
+              ease: 'easeInOut',
+            }}
+            className="pointer-events-none absolute left-0 top-0 z-[9999]"
+            style={{
+              width: pieceWidth,
+              filter:
+                toArea === 0 || toArea === 9
+                  ? 'brightness(1.5) drop-shadow(0 0 10px rgba(255, 255, 255, 0.5))'
+                  : 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.3))',
+            }}
+          >
+            <MandragoraPieceComponent
+              type={movingPiece.piece.type}
+              color={movingPiece.piece.color}
+            />
+          </motion.div>
+        );
+      })}
+    </AnimatePresence>
+  );
+}
 
 type HexagonAreaProps = {
   area: GameArea;
   isValidMove: boolean;
   onClick: () => void;
   color: 'green' | 'brown' | 'blue';
-  recommendationStyles: string;
   recommendedMoves: {areaId: number; rank: number}[];
 };
 
@@ -245,7 +222,6 @@ const HexagonArea: React.FC<HexagonAreaProps> = ({
   isValidMove,
   onClick,
   color,
-  recommendationStyles,
   recommendedMoves,
 }) => {
   const colorClasses = {
@@ -277,16 +253,26 @@ const HexagonArea: React.FC<HexagonAreaProps> = ({
   const pieceRows = organizePieces(area.pieces);
 
   return (
-    <motion.div
-      whileHover={isValidMove ? {scale: 1.05} : {}}
+    <div
       onClick={onClick}
-      className={`relative flex w-[23%] transform cursor-pointer items-center justify-center`}
+      role="button"
+      tabIndex={0}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      className={`group relative flex w-[23%] transform cursor-pointer items-center justify-center`}
       style={{aspectRatio: '1.2/1'}}
       data-hex-id={area.id}
     >
       {/* Main hexagon */}
       <div
-        className={`absolute inset-0 z-0 ${colorClasses[color]} ${recommendationStyles} clip-hexagon transition-all duration-200`}
+        className={`absolute inset-0 z-10 ${colorClasses[color]} clip-hexagon shadow-lg shadow-yellow-400/30 ring-4 ring-yellow-400/50 transition-all duration-200 ${isValidMove ? 'group-hover:scale-105' : ''}`}
+        style={{
+          transformOrigin: '50% 50%',
+        }}
       />
 
       <div
@@ -356,11 +342,12 @@ const HexagonArea: React.FC<HexagonAreaProps> = ({
               {row.map((piece, pieceIndex) => (
                 <div
                   key={`${rowIndex}-${pieceIndex}`}
-                  className="aspect-2/3 w-[11%]" // The size of each piece
+                  className="aspect-2/3 w-[11%]"
                 >
                   <MandragoraPieceComponent
                     type={piece.type}
                     color={piece.color}
+                    showLabel={false}
                   />
                 </div>
               ))}
@@ -368,7 +355,7 @@ const HexagonArea: React.FC<HexagonAreaProps> = ({
           );
         })}
       </div>
-    </motion.div>
+    </div>
   );
 };
 

@@ -14,7 +14,9 @@ type MandragoraPieceProps = {
   color: PieceColor;
 };
 
-const MandragoraPiece: React.FC<MandragoraPieceProps> = ({type, color}) => {
+const MandragoraPiece: React.FC<
+  MandragoraPieceProps & {showLabel?: boolean}
+> = ({type, color, showLabel}) => {
   const getImagePath = () => {
     if (type === 'Mandragora') {
       return '/images/mandragora-white.png';
@@ -33,9 +35,11 @@ const MandragoraPiece: React.FC<MandragoraPieceProps> = ({type, color}) => {
       transition={{type: 'spring', stiffness: 400, damping: 25}}
       className="group relative"
     >
-      <div className="absolute -top-4 left-1/2 -translate-x-1/2 transform whitespace-nowrap rounded-full border border-slate-700 bg-slate-800/90 px-1.5 py-0.5 text-[8px] font-medium text-slate-300 opacity-0 transition-opacity group-hover:opacity-100">
-        {type}
-      </div>
+      {showLabel && (
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 transform whitespace-nowrap rounded-full border border-slate-700 bg-slate-800/90 px-1.5 py-0.5 text-[8px] font-medium text-slate-300 opacity-0 transition-opacity group-hover:opacity-100">
+          {type}
+        </div>
+      )}
       <img
         src={getImagePath()}
         alt={`${color} ${type}`}
