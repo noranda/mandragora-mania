@@ -1,0 +1,34 @@
+name: ⬣ CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  lint:
+    name: ⬣ Lint repo
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+      - name: 📥 Install dependencies
+        uses: ./.github/actions/dependencies
+      - name: 🔬 eslint
+        run: yarn lint
+      - name: 🔬 prettier
+        run: yarn prettier --check .
+      - name: 🔬 typescript
+        run: yarn tsc
+  vitest:
+    name: ⚡ Vitest
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+      - name: 📥 Install dependencies
+        uses: ./.github/actions/dependencies
+      - name: ⚡ Run vitest
+        run: yarn test -- --coverage

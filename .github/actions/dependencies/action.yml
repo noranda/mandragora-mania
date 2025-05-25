@@ -1,0 +1,14 @@
+name: 📥 Dependencies
+
+runs:
+  using: composite
+  steps:
+    - name: ⎔ Setup node
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.tool-versions'
+        cache: yarn
+
+    - name: 📥 Install dependencies
+      shell: bash
+      run: yarn install --immutable
