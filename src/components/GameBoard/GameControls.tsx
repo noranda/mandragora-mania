@@ -31,7 +31,8 @@ const OPPONENTS = [
 
 const GameControls: React.FC<GameControlsProps> = ({state, dispatch, patternOptions}) => {
   const startResetDisabled =
-    !state.gameStarted && (state.playerGoesFirst === null || !state.selectedPattern);
+    !state.gameStarted &&
+    (state.playerGoesFirst === null || !state.selectedPattern || !state.opponentName);
 
   // Start/reset logic
   const handleStartReset = () => {

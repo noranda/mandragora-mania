@@ -30,9 +30,16 @@ const TurnBanner: React.FC<TurnBannerProps> = ({
       transition={{damping: 30, stiffness: 300, type: 'spring'}}
     >
       {isGameOver ? (
-        <div className="flex items-center gap-4">
-          {getGameOverMessage(playerScoreValue, opponentScoreValue)}
-          <Button onClick={onViewStats}>View stats</Button>
+        <div className="flex w-full items-center justify-between">
+          <span className="flex-1 text-left">
+            {getGameOverMessage(playerScoreValue, opponentScoreValue)}
+          </span>
+          <Button
+            className="-mr-3 ml-6 w-14 rounded bg-slate-800 px-4 py-1 text-base font-semibold text-white hover:bg-slate-700"
+            onClick={onViewStats}
+          >
+            Stats
+          </Button>
         </div>
       ) : isPlayerTurn ? (
         '🎲 Your Turn'

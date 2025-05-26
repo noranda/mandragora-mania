@@ -19,8 +19,8 @@ const BasePanel: React.FC<BasePanelProps> = ({
   panelRef,
   movingPieces = [],
 }) => {
-  const borderColor = title === 'Opponent' ? 'border-green-500' : 'border-blue-500';
-  const textColor = title === 'Opponent' ? 'text-green-500' : 'text-blue-500';
+  const borderColor = title === 'Opponent' ? 'border-green-500' : 'border-blue-400';
+  const textColor = title === 'Opponent' ? 'text-green-500' : 'text-blue-400';
 
   // Filter out animating pieces
   const animatingPieces = movingPieces.map(mp => mp.piece);

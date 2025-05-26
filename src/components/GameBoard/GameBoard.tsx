@@ -3,15 +3,14 @@ import {useEffect, useLayoutEffect} from 'react';
 import {analyzeMoves} from '@/utils/moveAnalyzer';
 import {calculatePoints} from '@/utils/scoring';
 import {boardPatterns} from '../../config/boardPatterns';
-import {useGameReducer} from './hooks/useGameReducer';
 import {useGameUIState} from './hooks/useGameUIState';
 import BaseLegend from './BaseLegend';
 import BasePanel from './BasePanel';
 import GameControls from './GameControls';
-import GameOverBanner from './GameOverBanner';
 import GameStatsModal from './GameStatsModal';
 import HexagonalBoard from './HexagonalBoard';
 import MoveAnalysis from './MoveAnalysis';
+import {useGameReducer} from './useGameReducer';
 
 // Main GameBoard component
 const GameBoard: React.FC = () => {
@@ -105,14 +104,6 @@ const GameBoard: React.FC = () => {
 
       {/* Move analysis table (shows best moves) */}
       <MoveAnalysis state={state} />
-
-      {/* Game over banner (shows winner/loser) */}
-      {state.isGameOver && (
-        <GameOverBanner
-          playerScoreValue={playerScoreValue}
-          opponentScoreValue={opponentScoreValue}
-        />
-      )}
 
       {/* Stats Modal (shows move history and scores) */}
       <GameStatsModal state={state} statsOpen={statsOpen} setStatsOpen={setStatsOpen} />
