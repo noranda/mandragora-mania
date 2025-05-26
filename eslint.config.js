@@ -84,14 +84,7 @@ export default [
             ['^react', '^@?\\w'],
             // absolute imports such as our `~/foo` style imports,
             // followed by relative imports (sorted ../../../ before ../../ before ./)
-            [
-              '^',
-              '^\\.\\.(?!/?$)',
-              '^\\.\\./?$',
-              '^\\./(?=.*/)(?!/?$)',
-              '^\\.(?!/?$)',
-              '^\\./?$',
-            ],
+            ['^', '^\\.\\.(?!/?$)', '^\\.\\./?$', '^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
           ],
         },
       ],
@@ -137,13 +130,7 @@ export default [
 
   // included files, excluded files, and globals
   {
-    ignores: [
-      '**/.cache',
-      '**/.yarn',
-      '**/dist',
-      '**/coverage',
-      '**/node_modules',
-    ],
+    ignores: ['**/.cache', '**/.yarn', '**/dist', '**/coverage', '**/node_modules'],
   },
   {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],

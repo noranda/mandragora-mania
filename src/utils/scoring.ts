@@ -11,10 +11,7 @@ import {type MandragoraPiece} from '../types';
  * @param isFirstPlayer - Whether the scoring player moved first in the game
  * @returns Total points that would be scored
  */
-export function calculatePoints(
-  pieces: MandragoraPiece[],
-  isFirstPlayer: boolean,
-): number {
+export function calculatePoints(pieces: MandragoraPiece[], isFirstPlayer: boolean): number {
   return pieces.reduce((sum, piece) => {
     // Handle undefined/null pieces
     if (!piece) return sum;

@@ -11,11 +11,7 @@ import {type GameArea, type MandragoraPiece} from '../types';
  * @param isPlayerTurn - Whether it's the player's turn
  * @returns true if the move is valid
  */
-export function isValidMove(
-  areaId: number,
-  areas: GameArea[],
-  isPlayerTurn: boolean,
-): boolean {
+export function isValidMove(areaId: number, areas: GameArea[], isPlayerTurn: boolean): boolean {
   const area = areas.find(a => a.id === areaId);
   if (!area || area.pieces.length === 0) return false;
 
@@ -61,9 +57,7 @@ export function distributePieces(
   // Distribute pieces according to the pattern
   pieces.forEach((piece, index) => {
     const targetAreaId = distributionPattern[index];
-    const isBase =
-      (isPlayerTurn && targetAreaId === 0) ||
-      (!isPlayerTurn && targetAreaId === 9);
+    const isBase = (isPlayerTurn && targetAreaId === 0) || (!isPlayerTurn && targetAreaId === 9);
 
     if (isBase) {
       scoringPieces.push(piece);

@@ -46,11 +46,7 @@ export const makeMove = (
   const pieces = [...sourceArea.pieces].reverse();
 
   // Get the distribution pattern for the pieces
-  const distributionPattern = getDistributionPattern(
-    areaId,
-    pieces.length,
-    isPlayerTurn,
-  );
+  const distributionPattern = getDistributionPattern(areaId, pieces.length, isPlayerTurn);
 
   // Distribute pieces and get results
   const {newAreas, scoringPieces, extraTurn} = distributePieces(
@@ -90,10 +86,7 @@ export const makeMove = (
  * @param isPlayerTurn - Whether it's the player's turn
  * @returns The area ID of a valid move, or null if no moves are available
  */
-export const getBestMove = (
-  areas: GameArea[],
-  isPlayerTurn: boolean,
-): number | null => {
+export const getBestMove = (areas: GameArea[], isPlayerTurn: boolean): number | null => {
   const validAreas = areas.filter(
     area => isValidMove(area.id, areas, isPlayerTurn) && area.pieces.length > 0,
   );
