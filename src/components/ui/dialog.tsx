@@ -1,4 +1,3 @@
-import {forwardRef} from 'react';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
@@ -14,10 +13,10 @@ const DialogPortal = DialogPrimitive.Portal;
 
 const DialogClose = DialogPrimitive.Close;
 
-const DialogOverlay = React.forwardRef<
-  React.ComponentRef<typeof DialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
->(({className, ...props}, ref) => (
+const DialogOverlay: React.FC<{
+  className?: string;
+  ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Overlay>>;
+}> = ({className, ref, ...props}) => (
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
@@ -26,13 +25,14 @@ const DialogOverlay = React.forwardRef<
     )}
     {...props}
   />
-));
+);
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
-const DialogContent = React.forwardRef<
-  React.ComponentRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({className, children, ...props}, ref) => (
+const DialogContent: React.FC<{
+  className?: string;
+  children?: React.ReactNode;
+  ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Content>>;
+}> = ({className, children, ref, ...props}) => (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content asChild {...props} ref={ref} forceMount>
@@ -54,7 +54,7 @@ const DialogContent = React.forwardRef<
       </motion.div>
     </DialogPrimitive.Content>
   </DialogPortal>
-));
+);
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({className, ...props}: React.HTMLAttributes<HTMLDivElement>) => (
@@ -70,28 +70,34 @@ const DialogFooter = ({className, ...props}: React.HTMLAttributes<HTMLDivElement
 );
 DialogFooter.displayName = 'DialogFooter';
 
-const DialogTitle = React.forwardRef<
-  React.ComponentRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(({className, ...props}, ref) => (
+const DialogTitle: React.FC<{
+  className?: string;
+  children?: React.ReactNode;
+  ref?: React.Ref<HTMLHeadingElement>;
+}> = ({className, children, ref, ...props}) => (
   <DialogPrimitive.Title
     ref={ref}
     className={cn('text-lg font-semibold leading-none tracking-tight', className)}
     {...props}
-  />
-));
+  >
+    {children}
+  </DialogPrimitive.Title>
+);
 DialogTitle.displayName = DialogPrimitive.Title.displayName;
 
-const DialogDescription = React.forwardRef<
-  React.ComponentRef<typeof DialogPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
->(({className, ...props}, ref) => (
+const DialogDescription: React.FC<{
+  className?: string;
+  children?: React.ReactNode;
+  ref?: React.Ref<HTMLParagraphElement>;
+}> = ({className, children, ref, ...props}) => (
   <DialogPrimitive.Description
     ref={ref}
     className={cn('text-muted-foreground text-sm', className)}
     {...props}
-  />
-));
+  >
+    {children}
+  </DialogPrimitive.Description>
+);
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
 export {

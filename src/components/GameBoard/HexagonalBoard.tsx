@@ -15,7 +15,7 @@ import type {GameAction, GameState} from './useGameReducer';
 // UI state type for refs and positions
 export type HexagonalBoardUIState = {
   basePositions: {opponent: DOMRect | null; player: DOMRect | null};
-  boardRef: React.RefObject<HTMLDivElement>;
+  boardRef: React.RefObject<HTMLDivElement | null>;
   hexPositions: Record<number, DOMRect>;
 };
 

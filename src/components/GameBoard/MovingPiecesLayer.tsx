@@ -27,7 +27,7 @@ export type MovingPiecesLayerProps = {
   basePositions: {opponent: DOMRect | null; player: DOMRect | null};
   hexPositions: Record<number, DOMRect>;
   movingPieces: MovePiece[];
-  parentRef: React.RefObject<HTMLDivElement>;
+  parentRef: React.RefObject<HTMLDivElement | null>;
 };
 
 const MovingPiecesLayer: React.FC<MovingPiecesLayerProps> = ({
