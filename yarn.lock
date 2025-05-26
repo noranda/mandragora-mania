@@ -4280,11 +4280,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@npm:^12.12.2":
-  version: 12.12.2
-  resolution: "framer-motion@npm:12.12.2"
+"framer-motion@npm:^12.14.0":
+  version: 12.14.0
+  resolution: "framer-motion@npm:12.14.0"
   dependencies:
-    motion-dom: "npm:^12.12.1"
+    motion-dom: "npm:^12.14.0"
     motion-utils: "npm:^12.12.1"
     tslib: "npm:^2.4.0"
   peerDependencies:
@@ -4298,7 +4298,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 10c0/6bee365effe3b8242c020fbd95130943c45a6750525e49250fbc11af9571f7038f89729a62153cc8cb47059e4f44f90ab55299c7846a8fd2675cc1c954cd9df3
+  checksum: 10c0/c6dc690bfd6737bb816f36b1ff05b379e5533b1df6fcfe2aed5537e7f30b069087313cdefb4006952412ee997bd40733a24d724b5cc12a69cf489219dad9de90
   languageName: node
   linkType: hard
 
@@ -5435,7 +5435,7 @@ __metadata:
     eslint-plugin-react-refresh: "npm:^0.4.19"
     eslint-plugin-simple-import-sort: "npm:^12.1.1"
     eslint-plugin-storybook: "npm:^0.12.0"
-    framer-motion: "npm:^12.12.2"
+    framer-motion: "npm:^12.14.0"
     globals: "npm:^16.0.0"
     happy-dom: "npm:^17.4.7"
     lucide-react: "npm:^0.511.0"
@@ -5613,12 +5613,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"motion-dom@npm:^12.12.1":
-  version: 12.12.1
-  resolution: "motion-dom@npm:12.12.1"
+"motion-dom@npm:^12.14.0":
+  version: 12.14.0
+  resolution: "motion-dom@npm:12.14.0"
   dependencies:
     motion-utils: "npm:^12.12.1"
-  checksum: 10c0/d80cdde894d07042e792ae69f47d7b58aa20691d4e4da7ce803af246295855fd59fdbd7a9e0def8554e22fd105c407cc672bd85e0a79a660d523adee7989d61d
+  checksum: 10c0/a51367ae45af014f80e2ec3151dd81f259b980a56621a78cd9ea80bfaf6d9e97b137e2e32251d5a70ce82914067b5d9b54d3a146a2fdc563c3e132eba89d7ac9
   languageName: node
   linkType: hard
 
