@@ -18,6 +18,7 @@
   "dependencies": {
     "@fontsource/baloo-2": "^5.2.5",
     "@fontsource/comfortaa": "^5.2.5",
+    "@fontsource/lexend": "^5.2.7",
     "@fontsource/luckiest-guy": "^5.2.5",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",

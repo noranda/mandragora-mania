@@ -1,4 +1,11 @@
 @import '@fontsource/luckiest-guy';
+@import '@fontsource/comfortaa/700.css';
+@import '@fontsource/baloo-2/700.css';
+@import '@fontsource/baloo-2/800.css';
+@import '@fontsource/lexend';
+@import '@fontsource/lexend/700.css';
+@import '@fontsource/lexend/800.css';
+@import '@fontsource/lexend/900.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -4,7 +4,7 @@ import GameBoard from './components/GameBoard/GameBoard';
 
 function App() {
   return (
-    <div className="min-h-screen w-full bg-slate-900 text-white">
+    <div className="font-lexend flex min-h-screen w-full flex-col items-center justify-center bg-slate-900 text-white">
       <AppBar />
       <GameBoard />
       <Footer />

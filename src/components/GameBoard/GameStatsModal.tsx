@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from '../ui/dialog';
 import {type GameState} from './useGameReducer';
 
@@ -21,15 +19,23 @@ type GameStatsModalProps = {
 
 const GameStatsModal: React.FC<GameStatsModalProps> = ({state, statsOpen, setStatsOpen}) => {
   // Calculate scores
-  const playerScoreValue = state.playerScore.reduce((acc, p) => acc + (p.value?.firstPlayer ?? 1), 0);
-  const opponentScoreValue = state.opponentScore.reduce((acc, p) => acc + (p.value?.secondPlayer ?? 1), 0);
+  const playerScoreValue = state.playerScore.reduce(
+    (acc, p) => acc + (p.value?.firstPlayer ?? 1),
+    0,
+  );
+  const opponentScoreValue = state.opponentScore.reduce(
+    (acc, p) => acc + (p.value?.secondPlayer ?? 1),
+    0,
+  );
   const moveHistory = state.moveHistory;
 
   return (
     <Dialog open={statsOpen} onOpenChange={setStatsOpen}>
       <DialogContent className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl border border-slate-700 bg-slate-900 p-8 shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="mb-4 text-center text-3xl font-bold text-pink-400">Game Stats</DialogTitle>
+          <DialogTitle className="mb-4 text-center text-3xl font-bold text-pink-400">
+            Game Stats
+          </DialogTitle>
         </DialogHeader>
         <div className="prose prose-invert max-w-none text-center text-white">
           <p className="mb-2 text-xl">Final Score</p>
@@ -55,7 +61,9 @@ const GameStatsModal: React.FC<GameStatsModalProps> = ({state, statsOpen, setSta
                     const piece = move.piecesMoved[i];
                     if (piece) {
                       pts =
-                        move.player === 'player' ? (piece.value?.firstPlayer ?? 1) : (piece.value?.secondPlayer ?? 1);
+                        move.player === 'player'
+                          ? (piece.value?.firstPlayer ?? 1)
+                          : (piece.value?.secondPlayer ?? 1);
                     }
                     label = `Your Base (+${pts} pt${pts !== 1 ? 's' : ''})`;
                   } else if (to === 9) {
@@ -63,7 +71,9 @@ const GameStatsModal: React.FC<GameStatsModalProps> = ({state, statsOpen, setSta
                     const piece = move.piecesMoved[i];
                     if (piece) {
                       pts =
-                        move.player === 'player' ? (piece.value?.secondPlayer ?? 1) : (piece.value?.firstPlayer ?? 1);
+                        move.player === 'player'
+                          ? (piece.value?.secondPlayer ?? 1)
+                          : (piece.value?.firstPlayer ?? 1);
                     }
                     label = `Opponent's Base (+${pts} pt${pts !== 1 ? 's' : ''})`;
                   }
@@ -75,7 +85,9 @@ const GameStatsModal: React.FC<GameStatsModalProps> = ({state, statsOpen, setSta
                     </span>
                   );
                 })}
-                <span className="ml-2 text-xs text-slate-400">{new Date(move.timestamp).toLocaleTimeString()}</span>
+                <span className="ml-2 text-xs text-slate-400">
+                  {new Date(move.timestamp).toLocaleTimeString()}
+                </span>
                 {move.extraTurn && <span className="ml-2 text-pink-400">(Extra Turn)</span>}
               </li>
             ))}

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import MandragoraPieceComponent from './MandragoraPiece';
 
 type BaseLegendProps = {

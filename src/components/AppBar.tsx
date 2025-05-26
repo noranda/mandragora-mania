@@ -17,7 +17,7 @@ const AppBar: React.FC = () => {
   const [analyzerRulesOpen, setAnalyzerRulesOpen] = useState(false);
 
   return (
-    <div className="relative flex items-center justify-center gap-3 p-2">
+    <div className="relative flex w-full items-center justify-center gap-3 p-2">
       <img
         src="/images/adenium-pink.png"
         alt="Adenium Pink"

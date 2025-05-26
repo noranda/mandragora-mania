@@ -1,4 +1,3 @@
-import React from 'react';
 import {faReddit} from '@fortawesome/free-brands-svg-icons';
 import {faEnvelope} from '@fortawesome/free-regular-svg-icons';
 import {faCoffee} from '@fortawesome/free-solid-svg-icons';
@@ -6,12 +5,12 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="mt-12 flex w-full flex-col items-center justify-between gap-4 border-t border-slate-700 bg-gray-900 px-4 py-6 text-xs text-slate-300 md:flex-row">
+    <footer className="mt-12 flex h-20 w-full flex-col items-center justify-between gap-4 border-t border-slate-700 bg-gray-900 px-4 py-6 text-xs text-slate-300 md:flex-row">
       <div className="flex-1 text-center md:text-left">
-        FINAL FANTASY XI ©2002 - 2025 SQUARE ENIX CO., LTD. FINAL FANTASY is a
-        registered trademark of Square Enix Holdings Co., Ltd. All material used
-        under license.
+        FINAL FANTASY XI ©2002 - 2025 SQUARE ENIX CO., LTD. FINAL FANTASY is a registered trademark
+        of Square Enix Holdings Co., Ltd. All material used under license.
       </div>
+
       <div className="flex flex-shrink-0 items-center gap-4">
         <a
           href="https://ko-fi.com/noranda"

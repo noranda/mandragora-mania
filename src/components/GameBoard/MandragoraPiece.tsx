@@ -1,4 +1,3 @@
-import React from 'react';
 import {motion} from 'framer-motion';
 
 import type {PieceColor, PieceType} from '../../types';
@@ -8,7 +7,11 @@ type MandragoraPieceProps = {
   color: PieceColor;
 };
 
-const MandragoraPiece: React.FC<MandragoraPieceProps & {showLabel?: boolean}> = ({type, color, showLabel}) => {
+const MandragoraPiece: React.FC<MandragoraPieceProps & {showLabel?: boolean}> = ({
+  type,
+  color,
+  showLabel,
+}) => {
   const getImagePath = () => {
     if (type === 'Mandragora') {
       return '/images/mandragora-white.png';

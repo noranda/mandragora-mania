@@ -752,6 +752,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource/lexend@npm:^5.2.7":
+  version: 5.2.7
+  resolution: "@fontsource/lexend@npm:5.2.7"
+  checksum: 10c0/3fbe933cb5929b85874cf35320d9f51f0cf8606f6357e00e1c81842191ad32b3d9740d162f1b1cbaac4bb4d52ff43bdfc0a5550df0f5710c90bfbb5c5cb36389
+  languageName: node
+  linkType: hard
+
 "@fontsource/luckiest-guy@npm:^5.2.5":
   version: 5.2.5
   resolution: "@fontsource/luckiest-guy@npm:5.2.5"
@@ -3939,9 +3946,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-import-context@npm:^0.1.3":
-  version: 0.1.4
-  resolution: "eslint-import-context@npm:0.1.4"
+"eslint-import-context@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "eslint-import-context@npm:0.1.5"
   dependencies:
     get-tsconfig: "npm:^4.10.1"
     stable-hash: "npm:^0.0.5"
@@ -3950,7 +3957,7 @@ __metadata:
   peerDependenciesMeta:
     unrs-resolver:
       optional: true
-  checksum: 10c0/e595cc6006c7ede73401edfcc98e44b224219f46ffbf401f5bfb6dc0d8d30971b0617859625ce5b87d5b332e1d495ecb33861edd1fa0147d83b2ea0dc2803979
+  checksum: 10c0/30de54045e60fc8f084e2100122c8a4d77317ef2df3d3340a5f00d05ba6f6609d2b6bcc2f13414334959d8997753a5f63f69022baa7e462285949eec762ce586
   languageName: node
   linkType: hard
 
@@ -3966,15 +3973,15 @@ __metadata:
   linkType: hard
 
 "eslint-import-resolver-typescript@npm:^4.3.5":
-  version: 4.4.0
-  resolution: "eslint-import-resolver-typescript@npm:4.4.0"
+  version: 4.4.1
+  resolution: "eslint-import-resolver-typescript@npm:4.4.1"
   dependencies:
     debug: "npm:^4.4.1"
-    eslint-import-context: "npm:^0.1.3"
+    eslint-import-context: "npm:^0.1.5"
     get-tsconfig: "npm:^4.10.1"
     is-bun-module: "npm:^2.0.0"
     stable-hash: "npm:^0.0.5"
-    tinyglobby: "npm:^0.2.13"
+    tinyglobby: "npm:^0.2.14"
     unrs-resolver: "npm:^1.7.2"
   peerDependencies:
     eslint: "*"
@@ -3985,7 +3992,7 @@ __metadata:
       optional: true
     eslint-plugin-import-x:
       optional: true
-  checksum: 10c0/97986ecf4b61789340180e1393fe357d9eabb8b35c9799c08aa7bcc5aa5f1f39addd1a8fd26088219691544ede9c12a2f59b767c4f145eb3653636c8c980f71e
+  checksum: 10c0/a03df85e4e7136e3ae36842a417a1a91f74054d999f32e9a40a2ea732c541be522d1382e18ace0e8c26e0505868f12a5de4a6b978d73ea91ca21d314f0f01f30
   languageName: node
   linkType: hard
 
@@ -4437,10 +4444,10 @@ __metadata:
   linkType: hard
 
 "framer-motion@npm:^12.12.2":
-  version: 12.12.2
-  resolution: "framer-motion@npm:12.12.2"
+  version: 12.14.0
+  resolution: "framer-motion@npm:12.14.0"
   dependencies:
-    motion-dom: "npm:^12.12.1"
+    motion-dom: "npm:^12.14.0"
     motion-utils: "npm:^12.12.1"
     tslib: "npm:^2.4.0"
   peerDependencies:
@@ -4454,7 +4461,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 10c0/6bee365effe3b8242c020fbd95130943c45a6750525e49250fbc11af9571f7038f89729a62153cc8cb47059e4f44f90ab55299c7846a8fd2675cc1c954cd9df3
+  checksum: 10c0/c6dc690bfd6737bb816f36b1ff05b379e5533b1df6fcfe2aed5537e7f30b069087313cdefb4006952412ee997bd40733a24d724b5cc12a69cf489219dad9de90
   languageName: node
   linkType: hard
 
@@ -5549,6 +5556,7 @@ __metadata:
     "@eslint/js": "npm:^9.25.0"
     "@fontsource/baloo-2": "npm:^5.2.5"
     "@fontsource/comfortaa": "npm:^5.2.5"
+    "@fontsource/lexend": "npm:^5.2.7"
     "@fontsource/luckiest-guy": "npm:^5.2.5"
     "@fortawesome/fontawesome-svg-core": "npm:^6.7.2"
     "@fortawesome/free-brands-svg-icons": "npm:^6.7.2"
@@ -5769,12 +5777,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"motion-dom@npm:^12.12.1":
-  version: 12.12.1
-  resolution: "motion-dom@npm:12.12.1"
+"motion-dom@npm:^12.14.0":
+  version: 12.14.0
+  resolution: "motion-dom@npm:12.14.0"
   dependencies:
     motion-utils: "npm:^12.12.1"
-  checksum: 10c0/d80cdde894d07042e792ae69f47d7b58aa20691d4e4da7ce803af246295855fd59fdbd7a9e0def8554e22fd105c407cc672bd85e0a79a660d523adee7989d61d
+  checksum: 10c0/a51367ae45af014f80e2ec3151dd81f259b980a56621a78cd9ea80bfaf6d9e97b137e2e32251d5a70ce82914067b5d9b54d3a146a2fdc563c3e132eba89d7ac9
   languageName: node
   linkType: hard
 
@@ -7354,7 +7362,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tinyglobby@npm:^0.2.12, tinyglobby@npm:^0.2.13":
+"tinyglobby@npm:^0.2.12, tinyglobby@npm:^0.2.13, tinyglobby@npm:^0.2.14":
   version: 0.2.14
   resolution: "tinyglobby@npm:0.2.14"
   dependencies:
