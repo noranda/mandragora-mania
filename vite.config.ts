@@ -6,6 +6,7 @@ const ReactCompilerConfig = {};
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/mandragora-mania/',
   build: {
     assetsInlineLimit: 0,
   },
