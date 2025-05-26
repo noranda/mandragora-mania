@@ -68,6 +68,13 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({state, dispatch, uiState
     dispatch({type: 'END_MOVE_ANIMATION'});
 
     // --- Game Logic ---
+    let analyzerScore: number | undefined = undefined;
+    if (state.isPlayerTurn) {
+      const analysis = state.moveAnalysis.find(a => a.areaId === areaId);
+      if (analysis) {
+        analyzerScore = analysis.totalValue;
+      }
+    }
     const {newAreas, newPlayerScore, newOpponentScore, extraTurn} = makeMove(
       areaId,
       state.areas,
@@ -81,6 +88,7 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({state, dispatch, uiState
       pieces: sourceArea.pieces,
       isPlayerTurn: state.isPlayerTurn,
       extraTurn,
+      analyzerScore,
     });
     const nextTurn = !extraTurn ? !state.isPlayerTurn : state.isPlayerTurn;
     const gameIsOver = isGameOverAfterMove(newAreas, nextTurn);

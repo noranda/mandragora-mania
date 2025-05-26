@@ -48,6 +48,7 @@ export type MoveRecord = {
   player: 'player' | 'opponent';
   timestamp: number;
   toArea: number[];
+  analyzerScore?: number;
 };
 
 export type GameStateSnapshot = {

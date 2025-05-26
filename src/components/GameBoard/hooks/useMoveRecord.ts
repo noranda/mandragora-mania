@@ -11,12 +11,13 @@ import type {MandragoraPiece} from '@/types';
  *   - extraTurn: boolean (whether the move grants an extra turn)
  *   - isPlayerTurn: boolean (true if it was the player's turn)
  *   - pieces: MandragoraPiece[] (the pieces moved)
+ *   - analyzerScore?: number (optional analyzer score for the move)
  *
  * Returns a MoveRecord object for storing in game history.
  *
  * Usage:
  *   const buildMoveRecord = useMoveRecord();
- *   const moveRecord = buildMoveRecord({ areaId, distributionPattern, extraTurn, isPlayerTurn, pieces });
+ *   const moveRecord = buildMoveRecord({ areaId, distributionPattern, extraTurn, isPlayerTurn, pieces, analyzerScore });
  */
 export function useMoveRecord() {
   function buildMoveRecord({
@@ -25,12 +26,14 @@ export function useMoveRecord() {
     extraTurn,
     isPlayerTurn,
     pieces,
+    analyzerScore,
   }: {
     areaId: number;
     distributionPattern: number[];
     extraTurn: boolean;
     isPlayerTurn: boolean;
     pieces: MandragoraPiece[];
+    analyzerScore?: number;
   }) {
     return {
       extraTurn,
@@ -39,6 +42,7 @@ export function useMoveRecord() {
       player: isPlayerTurn ? ('player' as const) : ('opponent' as const),
       timestamp: Date.now(),
       toArea: distributionPattern,
+      analyzerScore,
     };
   }
 

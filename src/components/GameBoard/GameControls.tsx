@@ -16,6 +16,19 @@ type GameControlsProps = {
   patternOptions: PatternOption[];
 };
 
+const OPPONENTS = [
+  'Green Thumb Moogle',
+  'Monsieur Kupont',
+  'Susuroon',
+  'Little Sheep',
+  'Yeestog',
+  'Atelloune',
+  'Kuyin Hathdenna',
+  'Kupofried',
+  'Chacharoon',
+  'Sakura',
+];
+
 const GameControls: React.FC<GameControlsProps> = ({state, dispatch, patternOptions}) => {
   const startResetDisabled =
     !state.gameStarted && (state.playerGoesFirst === null || !state.selectedPattern);
@@ -72,6 +85,24 @@ const GameControls: React.FC<GameControlsProps> = ({state, dispatch, patternOpti
                   {pattern.name}
                 </SelectItem>
               ))}
+          </SelectContent>
+        </Select>
+
+        <Select
+          disabled={state.gameStarted}
+          onValueChange={name => dispatch({type: 'SET_OPPONENT_NAME', name})}
+          value={state.opponentName}
+        >
+          <SelectTrigger className="w-56 border-slate-600 bg-slate-700 text-white">
+            <SelectValue placeholder="Which opponent?" />
+          </SelectTrigger>
+
+          <SelectContent>
+            {OPPONENTS.map(name => (
+              <SelectItem key={name} value={name}>
+                {name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
 

@@ -51,6 +51,7 @@ export type GameState = {
   redoStack: MoveRecord[];
   /** The selected board pattern (by id) */
   selectedPattern: string;
+  opponentName: string;
 };
 
 /**
@@ -76,7 +77,8 @@ export type GameAction =
   | {type: 'REDO'} // Redo last undone move
   | {type: 'SET_PATTERN'; patternId: string} // Set board pattern
   | {type: 'SET_PLAYER_GOES_FIRST'; value: boolean} // Set who goes first
-  | {type: 'SET_GAME_STARTED'; value: boolean}; // Set game started flag
+  | {type: 'SET_GAME_STARTED'; value: boolean} // Set game started flag
+  | {type: 'SET_OPPONENT_NAME'; name: string}; // Set opponent name
 
 /**
  * The initial state for a new game or after reset.
@@ -96,6 +98,7 @@ const initialGameState: GameState = {
   redoGameStateStack: [],
   redoStack: [],
   selectedPattern: '',
+  opponentName: '',
 };
 
 /**
@@ -114,6 +117,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         isPlayerTurn: action.playerGoesFirst,
         playerGoesFirst: action.playerGoesFirst,
         selectedPattern: action.patternId,
+        opponentName: state.opponentName,
         gameStateHistory: [
           {
             areas: JSON.parse(JSON.stringify(pattern.areas)),
@@ -215,6 +219,8 @@ function gameReducer(state: GameState, action: GameAction): GameState {
     case 'SET_GAME_STARTED':
       // Set the game started flag
       return {...state, gameStarted: action.value};
+    case 'SET_OPPONENT_NAME':
+      return {...state, opponentName: action.name};
     default:
       return state;
   }
