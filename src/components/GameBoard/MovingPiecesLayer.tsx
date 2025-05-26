@@ -4,34 +4,30 @@ import type {MovePiece} from '@/types';
 import MandragoraPieceComponent from './MandragoraPiece';
 
 /**
- * MovingPiecesLayer
- *
- * Renders animated Mandragora pieces moving between board areas and bases.
- * Used as an overlay in the game board to visualize piece movement during a turn.
+ * MovingPiecesLayer animates pieces as they move between areas on the board.
+ * If a piece is moving to a hex, it animates to the hex position.
+ * If a piece is moving to a base (toArea 0 or 9), it animates to the far right (player base) or far left (opponent base) of the board.
+ * This component no longer relies on base DOMRects or refs.
  *
  * Props:
- *   - basePositions: DOMRects for player and opponent base panels (for animation targets)
  *   - hexPositions: DOMRects for each hex area (for animation start/end)
  *   - movingPieces: Array of piece movement objects (with from/to, delay, etc)
  *   - parentRef: Ref to the board container (for absolute positioning)
  *
  * Usage:
  *   <MovingPiecesLayer
- *     basePositions={uiState.basePositions}
  *     hexPositions={uiState.hexPositions}
  *     movingPieces={state.movingPieces}
  *     parentRef={uiState.boardRef}
  *   />
  */
 export type MovingPiecesLayerProps = {
-  basePositions: {opponent: DOMRect | null; player: DOMRect | null};
   hexPositions: Record<number, DOMRect>;
   movingPieces: MovePiece[];
   parentRef: React.RefObject<HTMLDivElement | null>;
 };
 
 const MovingPiecesLayer: React.FC<MovingPiecesLayerProps> = ({
-  basePositions,
   hexPositions,
   movingPieces,
   parentRef,
@@ -45,16 +41,31 @@ const MovingPiecesLayer: React.FC<MovingPiecesLayerProps> = ({
 
         // Determine the DOMRect for the destination (hex or base)
         let toPos: DOMRect | null = null;
-        if (toArea === 0 && basePositions.player) {
-          toPos = basePositions.player;
-        } else if (toArea === 9 && basePositions.opponent) {
-          toPos = basePositions.opponent;
+        if (toArea === 0 || toArea === 9) {
+          // Animate to the far right (player base) or far left (opponent base) of the board, with extra offset
+          const parentRect = parentRef.current?.getBoundingClientRect();
+          if (!parentRect) return null;
+          // Fake a DOMRect for the edge, offset by 100px
+          const offset = 100;
+          toPos = {
+            left: toArea === 0 ? parentRect.right + offset : parentRect.left - offset,
+            right: toArea === 0 ? parentRect.right + offset : parentRect.left - offset,
+            top: parentRect.top + parentRect.height / 2,
+            bottom: parentRect.top + parentRect.height / 2,
+            width: 0,
+            height: 0,
+            x: toArea === 0 ? parentRect.right + offset : parentRect.left - offset,
+            y: parentRect.top + parentRect.height / 2,
+            toJSON: () => ({}),
+          } as DOMRect;
         } else {
           toPos = hexPositions[toArea];
         }
 
         // If either position is missing, skip rendering this piece
-        if (!fromPos || !toPos) return null;
+        if (!fromPos || !toPos) {
+          return null;
+        }
 
         // Get the bounding rect of the board container for absolute positioning
         const parentRect = parentRef.current?.getBoundingClientRect();
@@ -68,9 +79,9 @@ const MovingPiecesLayer: React.FC<MovingPiecesLayerProps> = ({
 
         // Calculate end coordinates based on destination
         let endX;
-        if (toArea === 0 && basePositions.player) {
+        if (toArea === 0) {
           endX = toPos.left - parentRect.left + toPos.width * 0.85;
-        } else if (toArea === 9 && basePositions.opponent) {
+        } else if (toArea === 9) {
           endX = toPos.left - parentRect.left + toPos.width * 0.15;
         } else {
           endX = toPos.left - parentRect.left + toPos.width * 0.5;

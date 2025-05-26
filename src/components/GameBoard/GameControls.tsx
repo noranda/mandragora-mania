@@ -54,7 +54,7 @@ const GameControls: React.FC<GameControlsProps> = ({state, dispatch, patternOpti
         </Button>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <Select
           disabled={state.gameStarted}
           onValueChange={patternId => dispatch({type: 'SET_PATTERN', patternId})}

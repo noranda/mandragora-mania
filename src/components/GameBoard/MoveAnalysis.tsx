@@ -6,7 +6,9 @@ type MoveAnalysisProps = {
 
 const MoveAnalysis: React.FC<MoveAnalysisProps> = ({state}) => {
   const sortedMoveAnalysis = [...state.moveAnalysis].sort((a, b) => b.totalValue - a.totalValue);
+
   if (!sortedMoveAnalysis.length) return null;
+
   return (
     <div className="mt-8 rounded-lg border border-slate-700 bg-slate-800 p-4">
       <h3 className="mb-2 text-lg font-semibold text-white">Move Analysis</h3>

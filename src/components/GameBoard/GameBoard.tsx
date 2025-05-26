@@ -15,20 +15,10 @@ import MoveAnalysis from './MoveAnalysis';
 
 // Main GameBoard component
 const GameBoard: React.FC = () => {
-  // --- Game logic state (reducer) ---
   const [state, dispatch] = useGameReducer();
 
   // --- UI state (custom hook) ---
-  const {
-    basePositions,
-    boardRef,
-    hexPositions,
-    opponentBasePanelRef,
-    playerBasePanelRef,
-    setHexPositions,
-    setStatsOpen,
-    statsOpen,
-  } = useGameUIState();
+  const {boardRef, hexPositions, setHexPositions, setStatsOpen, statsOpen} = useGameUIState();
 
   // --- Scoring and move analysis ---
   const playerScoreValue = calculatePoints(state.playerScore, true);
@@ -76,19 +66,14 @@ const GameBoard: React.FC = () => {
   }, [state.gameStateHistory, boardRef, setHexPositions]);
 
   return (
-    <div className="mx-auto flex w-full max-w-[1600px] flex-1 flex-col gap-8 rounded-xl border border-slate-700 bg-slate-800 p-8 shadow-2xl">
+    <div className="flex w-full max-w-[1600px] flex-1 flex-col gap-8 rounded-xl border border-slate-700 bg-slate-800 p-8 shadow-2xl">
       {/* Game controls: undo, redo, pattern selection, start/reset */}
       <GameControls state={state} dispatch={dispatch} patternOptions={boardPatterns} />
 
       <div className="flex w-full justify-between">
         {/* Opponent base (left) */}
         <div className="flex h-full flex-col items-center gap-2">
-          <BasePanel
-            panelRef={opponentBasePanelRef}
-            pieces={state.opponentScore}
-            score={opponentScoreValue}
-            title="Opponent"
-          />
+          <BasePanel pieces={state.opponentScore} score={opponentScoreValue} title="Opponent" />
           <BaseLegend
             gameStarted={state.gameStarted}
             isPlayer={false}
@@ -100,17 +85,16 @@ const GameBoard: React.FC = () => {
         <HexagonalBoard
           state={state}
           dispatch={dispatch}
-          uiState={{basePositions, boardRef, hexPositions}}
+          uiState={{
+            boardRef,
+            hexPositions,
+          }}
+          onViewStats={() => setStatsOpen(true)}
         />
 
         {/* Player base (right) */}
         <div className="flex h-full flex-col items-center gap-2">
-          <BasePanel
-            panelRef={playerBasePanelRef}
-            pieces={state.playerScore}
-            score={playerScoreValue}
-            title="You"
-          />
+          <BasePanel pieces={state.playerScore} score={playerScoreValue} title="You" />
           <BaseLegend
             isPlayer={true}
             playerGoesFirst={state.playerGoesFirst}

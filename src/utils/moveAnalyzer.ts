@@ -58,11 +58,7 @@ export function simulateMove(
   }
 
   const pieces = [...sourceArea.pieces].reverse(); // Last in, first out
-  const distributionPattern = getDistributionPattern(
-    areaId,
-    pieces.length,
-    isPlayerTurn,
-  );
+  const distributionPattern = getDistributionPattern(areaId, pieces.length, isPlayerTurn);
 
   // Use shared distribution logic
   return distributePieces(
@@ -117,11 +113,7 @@ function analyzeMovesRecursive(
 
   for (const area of validAreas) {
     // Simulate this move
-    const {newAreas, scoringPieces, extraTurn} = simulateMove(
-      area.id,
-      areas,
-      isPlayerTurn,
-    );
+    const {newAreas, scoringPieces, extraTurn} = simulateMove(area.id, areas, isPlayerTurn);
 
     // Calculate immediate value from this move
     const immediatePoints = calculatePoints(scoringPieces, isPlayerTurn);
@@ -131,22 +123,20 @@ function analyzeMovesRecursive(
     const extraTurnBonus = extraTurn ? 30 : 0;
 
     // Recursively analyze the next move
-    const {bestValue: futureValue, warning: futureWarning} =
-      analyzeMovesRecursive(newAreas, !isPlayerTurn, depth + 1, alpha, beta);
+    const {bestValue: futureValue, warning: futureWarning} = analyzeMovesRecursive(
+      newAreas,
+      !isPlayerTurn,
+      depth + 1,
+      alpha,
+      beta,
+    );
 
     // Combine values
     let moveValue =
-      immediatePoints * 10 +
-      positionValue +
-      extraTurnBonus +
-      DISCOUNT_FACTOR * futureValue;
+      immediatePoints * 10 + positionValue + extraTurnBonus + DISCOUNT_FACTOR * futureValue;
 
     // Use correct arguments and deduction logic (areas, isPlayerTurn, newAreas)
-    const penalization = getOpponentThreatPenalty(
-      areas,
-      isPlayerTurn,
-      newAreas,
-    );
+    const penalization = getOpponentThreatPenalty(areas, isPlayerTurn, newAreas);
     let warning: string | undefined = undefined;
     let isPenalized = false;
     if (penalization) {
@@ -198,10 +188,7 @@ function analyzeMovesRecursive(
  * This is different from evaluateStrategicValue as it looks at the entire board,
  * not just a single move.
  */
-function evaluateStrategicValue(
-  areas: GameArea[],
-  isPlayerTurn: boolean,
-): number {
+function evaluateStrategicValue(areas: GameArea[], isPlayerTurn: boolean): number {
   let value = 0;
   const totalPieces = areas.reduce((sum, a) => sum + a.pieces.length, 0);
   const isEarlyGame = totalPieces > 15;
@@ -260,10 +247,7 @@ function evaluateStrategicValue(
  * Analyzes all possible moves from the current board state and ranks them by value.
  * Now includes look-ahead analysis of future moves.
  */
-export function analyzeMoves(
-  areas: GameArea[],
-  isPlayerTurn: boolean,
-): MoveAnalysis[] {
+export function analyzeMoves(areas: GameArea[], isPlayerTurn: boolean): MoveAnalysis[] {
   const validAreas = areas.filter(
     area =>
       area.pieces.length > 0 &&
@@ -278,38 +262,19 @@ export function analyzeMoves(
 
   // Precompute board state before the move for strategic bonuses
   const beforeBoardPresence = calculateBoardPresenceBonus(areas, isPlayerTurn);
-  const beforePerfectMoves = calculateFuturePerfectMovesBonus(
-    areas,
-    isPlayerTurn,
-  );
-  const beforeAvgPieceValue = calculateAveragePieceValueBonus(
-    areas,
-    isPlayerTurn,
-  );
+  const beforePerfectMoves = calculateFuturePerfectMovesBonus(areas, isPlayerTurn);
+  const beforeAvgPieceValue = calculateAveragePieceValueBonus(areas, isPlayerTurn);
   const beforeFlexibility = calculateFlexibilityBonus(areas, isPlayerTurn);
 
   const movesWithRawValues = validAreas.map(area => {
     // Simulate this move
-    const {scoringPieces, extraTurn, newAreas} = simulateMove(
-      area.id,
-      areas,
-      isPlayerTurn,
-    );
+    const {scoringPieces, extraTurn, newAreas} = simulateMove(area.id, areas, isPlayerTurn);
     const immediatePoints = calculatePoints(scoringPieces, isPlayerTurn);
 
     // Strategic bonuses: compare before and after
-    const afterBoardPresence = calculateBoardPresenceBonus(
-      newAreas,
-      isPlayerTurn,
-    );
-    const afterPerfectMoves = calculateFuturePerfectMovesBonus(
-      newAreas,
-      isPlayerTurn,
-    );
-    const afterAvgPieceValue = calculateAveragePieceValueBonus(
-      newAreas,
-      isPlayerTurn,
-    );
+    const afterBoardPresence = calculateBoardPresenceBonus(newAreas, isPlayerTurn);
+    const afterPerfectMoves = calculateFuturePerfectMovesBonus(newAreas, isPlayerTurn);
+    const afterAvgPieceValue = calculateAveragePieceValueBonus(newAreas, isPlayerTurn);
     const afterFlexibility = calculateFlexibilityBonus(newAreas, isPlayerTurn);
 
     // Calculate strategic value bonuses
@@ -328,15 +293,14 @@ export function analyzeMoves(
     rawValue += flexibilityBonus * 3;
 
     // Look-ahead analysis (recursive, up to 3 moves ahead)
-    const {bestValue: futureValue, warning: futureWarning} =
-      analyzeMovesRecursive(newAreas, !isPlayerTurn);
+    const {bestValue: futureValue, warning: futureWarning} = analyzeMovesRecursive(
+      newAreas,
+      !isPlayerTurn,
+    );
 
     // If look-ahead penalization, return penalized move immediately
     if (futureWarning) {
       const explanation = `Area ${area.id}: ${futureWarning}`;
-      console.log(
-        `[analyzeMoves] areaId: ${area.id}, totalValue: 0, explanation: ${explanation}`,
-      );
       return {
         areaId: area.id,
         explanation,
@@ -345,11 +309,7 @@ export function analyzeMoves(
     }
 
     // Penalization for opponent opportunities
-    const penalization = getOpponentThreatPenalty(
-      areas,
-      isPlayerTurn,
-      newAreas,
-    );
+    const penalization = getOpponentThreatPenalty(areas, isPlayerTurn, newAreas);
     let warning: string | undefined = undefined;
     let isPenalized = false;
     if (penalization) {
@@ -359,9 +319,6 @@ export function analyzeMoves(
     // If penalized (immediate), force value to 0 and skip normalization
     if (isPenalized) {
       const explanation = `Area ${area.id}: ${warning}`;
-      console.log(
-        `[analyzeMoves] areaId: ${area.id}, totalValue: 0, explanation: ${explanation}`,
-      );
       return {
         areaId: area.id,
         explanation,
@@ -375,22 +332,13 @@ export function analyzeMoves(
     const reasons: string[] = [];
     if (immediatePoints > 0) reasons.push(`gains ${immediatePoints} points`);
     if (extraTurn) reasons.push('★ EXTRA TURN - last piece lands in base');
-    if (boardPresenceBonus > 0)
-      reasons.push(`controls ${boardPresenceBonus} more pieces`);
-    if (perfectMovesBonus > 0)
-      reasons.push(`sets up ${perfectMovesBonus} new perfect moves`);
+    if (boardPresenceBonus > 0) reasons.push(`controls ${boardPresenceBonus} more pieces`);
+    if (perfectMovesBonus > 0) reasons.push(`sets up ${perfectMovesBonus} new perfect moves`);
     if (avgPieceValueBonus > 0)
-      reasons.push(
-        `increases avg piece value by ${avgPieceValueBonus.toFixed(2)}`,
-      );
-    if (flexibilityBonus > 0)
-      reasons.push(`adds ${flexibilityBonus} new valid moves`);
-    if (futureValue > 0)
-      reasons.push(`strong future position (${futureValue.toFixed(1)})`);
+      reasons.push(`increases avg piece value by ${avgPieceValueBonus.toFixed(2)}`);
+    if (flexibilityBonus > 0) reasons.push(`adds ${flexibilityBonus} new valid moves`);
+    if (futureValue > 0) reasons.push(`strong future position (${futureValue.toFixed(1)})`);
     explanation += reasons.join(', ');
-    console.log(
-      `[analyzeMoves] areaId: ${area.id}, totalValue: ${normalizedValue}, explanation: ${explanation}`,
-    );
     return {
       areaId: area.id,
       explanation,

@@ -10,7 +10,7 @@ const GameOverBanner = ({playerScoreValue, opponentScoreValue}: GameOverBannerPr
       {playerScoreValue > opponentScoreValue
         ? '🎉 You Win! 🎉'
         : playerScoreValue < opponentScoreValue
-          ? '😔 Opponent Wins!'
+          ? '😔 Opponent Wins.'
           : "It's a Tie!"}
     </p>
     <p className="text-xl text-slate-300">

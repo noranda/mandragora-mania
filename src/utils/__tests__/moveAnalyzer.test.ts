@@ -49,9 +49,7 @@ describe('analyzeMoves (modern rules)', () => {
 
   it('applies future perfect moves bonus', () => {
     // Setup so that after a move, more perfect moves are possible
-    const areas = createTestAreas([
-      {areaId: 1, pieces: [createTestPiece(), createTestPiece()]},
-    ]);
+    const areas = createTestAreas([{areaId: 1, pieces: [createTestPiece(), createTestPiece()]}]);
     const moves = analyzeMoves(areas, true);
     // Should get a bonus if after the move, more perfect moves are possible
     expect(moves[0].totalValue).toBeGreaterThan(0);
@@ -97,9 +95,7 @@ describe('analyzeMoves (modern rules)', () => {
 
   it('penalizes moves that create new opponent extra turn', () => {
     // Setup: Player moves from area 2 with 9 pieces, last piece lands in area 8 for the opponent
-    const areas = createTestAreas([
-      {areaId: 2, pieces: Array(9).fill(createTestPiece())},
-    ]);
+    const areas = createTestAreas([{areaId: 2, pieces: Array(9).fill(createTestPiece())}]);
     const moves = analyzeMoves(areas, true);
     // Simulate the move manually
     const {newAreas} = simulateMove(2, areas, true);
@@ -117,9 +113,7 @@ describe('analyzeMoves (modern rules)', () => {
     );
     expect(penalizedMove).toBeDefined();
     expect(penalizedMove!.totalValue).toBeLessThanOrEqual(0);
-    expect(penalizedMove!.explanation).toContain(
-      'WARNING: grants opponent an extra move',
-    );
+    expect(penalizedMove!.explanation).toContain('WARNING: grants opponent an extra move');
   });
 
   it('penalizes moves that create new opponent scoring opportunity', () => {
@@ -141,9 +135,7 @@ describe('analyzeMoves (modern rules)', () => {
     expect(penalty!.warning).toContain('extra move');
     expect(penalizedMove).toBeDefined();
     expect(penalizedMove!.totalValue).toBeLessThanOrEqual(0);
-    expect(penalizedMove!.explanation).toContain(
-      'WARNING: grants opponent an extra move',
-    );
+    expect(penalizedMove!.explanation).toContain('WARNING: grants opponent an extra move');
   });
 
   it('does not penalize if opponent already had the opportunity', () => {
@@ -159,9 +151,7 @@ describe('analyzeMoves (modern rules)', () => {
 
   it('normalizes values to -100 to 100', () => {
     // Create a move with a huge bonus
-    const areas = createTestAreas([
-      {areaId: 1, pieces: Array(20).fill(createTestPiece())},
-    ]);
+    const areas = createTestAreas([{areaId: 1, pieces: Array(20).fill(createTestPiece())}]);
     const moves = analyzeMoves(areas, true);
     expect(moves[0].totalValue).toBeLessThanOrEqual(100);
     expect(moves[0].totalValue).toBeGreaterThanOrEqual(0);
@@ -186,9 +176,7 @@ describe('analyzeMoves (modern rules)', () => {
 
   it('handles look-ahead and recursive analysis', () => {
     // Setup: Player moves from area 2 with 9 pieces, last piece lands in area 8, so on the next turn, opponent can move from 8 and get an extra turn
-    const areas = createTestAreas([
-      {areaId: 2, pieces: Array(9).fill(createTestPiece())},
-    ]);
+    const areas = createTestAreas([{areaId: 2, pieces: Array(9).fill(createTestPiece())}]);
     const moves = analyzeMoves(areas, true);
     console.log(
       'Moves for look-ahead penalization:',

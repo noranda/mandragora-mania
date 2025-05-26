@@ -1,5 +1,5 @@
 import {cn} from '@/lib/utils';
-import type {GameArea, MandragoraPiece} from '../../types';
+import type {GameArea, MandragoraPiece, MovePiece} from '../../types';
 import MandragoraPieceComponent from './MandragoraPiece';
 
 // Color classes for each area type
@@ -39,6 +39,7 @@ export type HexagonAreaProps = {
   isValidMove: boolean;
   onClick: () => void;
   recommendedMoveAreaId?: number | null;
+  movingPieces?: MovePiece[];
 };
 
 const HexagonArea: React.FC<HexagonAreaProps> = ({
@@ -47,7 +48,11 @@ const HexagonArea: React.FC<HexagonAreaProps> = ({
   isValidMove,
   onClick,
   recommendedMoveAreaId,
+  movingPieces = [],
 }) => {
+  // Filter out animating pieces
+  const animatingPieces = movingPieces.map(mp => mp.piece);
+  const visiblePieces = area.pieces.filter(piece => !animatingPieces.some(ap => ap === piece));
   // Organize pieces into rows from bottom up
   const organizePieces = (pieces: MandragoraPiece[]) => {
     const rows: MandragoraPiece[][] = [[], [], [], [], []];
@@ -98,7 +103,7 @@ const HexagonArea: React.FC<HexagonAreaProps> = ({
 
       {/* Pieces container */}
       <div className="absolute inset-0 z-10 flex flex-col justify-end">
-        {organizePieces(area.pieces).map((row, rowIndex) => (
+        {organizePieces(visiblePieces).map((row, rowIndex) => (
           <div
             className="flex items-center justify-start gap-2"
             key={rowIndex}

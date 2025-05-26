@@ -1,19 +1,30 @@
 import {AnimatePresence} from 'framer-motion';
 
 import {cn} from '@/lib/utils';
-import {type MandragoraPiece} from '../../types';
+import {type MandragoraPiece, type MovePiece} from '../../types';
 import MandragoraPieceComponent from './MandragoraPiece';
 
 type BasePanelProps = {
-  panelRef: React.RefObject<HTMLDivElement | null>;
+  panelRef?: React.RefObject<HTMLDivElement | null>;
   pieces: MandragoraPiece[];
   score: number;
   title: string;
+  movingPieces?: MovePiece[];
 };
 
-const BasePanel: React.FC<BasePanelProps> = ({title, score, pieces, panelRef}) => {
+const BasePanel: React.FC<BasePanelProps> = ({
+  title,
+  score,
+  pieces,
+  panelRef,
+  movingPieces = [],
+}) => {
   const borderColor = title === 'Opponent' ? 'border-green-500' : 'border-blue-500';
   const textColor = title === 'Opponent' ? 'text-green-500' : 'text-blue-500';
+
+  // Filter out animating pieces
+  const animatingPieces = movingPieces.map(mp => mp.piece);
+  const visiblePieces = pieces.filter(piece => !animatingPieces.some(ap => ap === piece));
 
   return (
     <div
@@ -31,7 +42,7 @@ const BasePanel: React.FC<BasePanelProps> = ({title, score, pieces, panelRef}) =
 
       <div className="flex flex-1 flex-wrap-reverse content-start items-center justify-start gap-x-3 overflow-y-auto px-2 pb-2 pt-2">
         <AnimatePresence>
-          {pieces.map((piece, index, array) => (
+          {visiblePieces.map((piece, index, array) => (
             <div
               key={`${title}-${index}`}
               className={`aspect-2/3 relative w-[18%] ${index >= 4 ? '-mb-5' : ''}`}

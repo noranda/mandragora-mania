@@ -4,7 +4,6 @@ import {getDistributionPattern} from '@/utils/movementPaths';
 import {calculatePoints} from '@/utils/scoring';
 import type {GameArea} from '../../types';
 import {useGameOverCheck} from './hooks/useGameOverCheck';
-import {useGameUIState} from './hooks/useGameUIState';
 import {useMoveAnimation} from './hooks/useMoveAnimation';
 import {useMoveRecord} from './hooks/useMoveRecord';
 import HexagonArea from './HexagonArea';
@@ -14,7 +13,6 @@ import type {GameAction, GameState} from './useGameReducer';
 
 // UI state type for refs and positions
 export type HexagonalBoardUIState = {
-  basePositions: {opponent: DOMRect | null; player: DOMRect | null};
   boardRef: React.RefObject<HTMLDivElement | null>;
   hexPositions: Record<number, DOMRect>;
 };
@@ -23,10 +21,12 @@ type HexagonalBoardProps = {
   state: GameState;
   dispatch: React.Dispatch<GameAction>;
   uiState: HexagonalBoardUIState;
+  onViewStats: () => void;
 };
 
-const HexagonalBoard: React.FC<HexagonalBoardProps> = ({state, dispatch, uiState}) => {
-  const {setStatsOpen} = useGameUIState();
+const HexagonalBoard: React.FC<HexagonalBoardProps> = ({state, dispatch, uiState, onViewStats}) => {
+  // Use refs and setters from uiState prop
+  const {boardRef, hexPositions} = uiState;
   const createMoveAnimations = useMoveAnimation();
   const isGameOverAfterMove = useGameOverCheck();
   const buildMoveRecord = useMoveRecord();
@@ -46,7 +46,7 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({state, dispatch, uiState
     const sourceArea = state.areas.find((a: GameArea) => a.id === areaId);
     if (!sourceArea) return;
 
-    // --- Animation ---
+    // --- Animation setup ---
     const distributionPattern = getDistributionPattern(
       areaId,
       sourceArea.pieces.length,
@@ -59,9 +59,12 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({state, dispatch, uiState
       distributionPattern,
       sourceArea.pieces,
     );
+
+    // Start the animation
     dispatch({type: 'START_MOVE_ANIMATION', movingPieces: animations});
     const totalDuration = animations.length * animDelay + 0.1;
     await new Promise(resolve => setTimeout(resolve, totalDuration * 1000));
+    dispatch({type: 'END_MOVE_ANIMATION'});
 
     // --- Game Logic ---
     const {newAreas, newPlayerScore, newOpponentScore, extraTurn} = makeMove(
@@ -81,6 +84,7 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({state, dispatch, uiState
     const nextTurn = !extraTurn ? !state.isPlayerTurn : state.isPlayerTurn;
     const gameIsOver = isGameOverAfterMove(newAreas, nextTurn);
 
+    // Now update the state so the piece appears in the base
     dispatch({
       type: 'MAKE_MOVE',
       areaId,
@@ -91,8 +95,6 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({state, dispatch, uiState
       extraTurn,
       isGameOver: gameIsOver,
     });
-
-    dispatch({type: 'END_MOVE_ANIMATION'});
   };
 
   // Calculate positions for a hexagonal layout
@@ -117,7 +119,7 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({state, dispatch, uiState
   };
 
   return (
-    <div className="relative mx-auto w-full" ref={uiState.boardRef}>
+    <div className="relative mx-auto w-full" ref={boardRef}>
       {/* Animated Turn Banner */}
       {state.gameStarted && (
         <TurnBanner
@@ -125,7 +127,7 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({state, dispatch, uiState
           isPlayerTurn={state.isPlayerTurn}
           playerScoreValue={playerScoreValue}
           opponentScoreValue={opponentScoreValue}
-          onViewStats={() => setStatsOpen(true)}
+          onViewStats={onViewStats}
         />
       )}
 
@@ -176,9 +178,8 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({state, dispatch, uiState
       {/* Animated pieces layer */}
       <MovingPiecesLayer
         movingPieces={state.movingPieces}
-        basePositions={uiState.basePositions}
-        hexPositions={uiState.hexPositions}
-        parentRef={uiState.boardRef}
+        hexPositions={hexPositions}
+        parentRef={boardRef}
       />
     </div>
   );

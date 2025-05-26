@@ -1,3 +1,4 @@
+import {type MandragoraPiece} from '@/types';
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from '../ui/dialog';
 import {type GameState} from './useGameReducer';
 
