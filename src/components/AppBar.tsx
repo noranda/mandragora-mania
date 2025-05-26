@@ -1,5 +1,6 @@
 import {useState} from 'react';
 
+import adeniumPink from '@/assets/images/adenium-pink.png';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -19,7 +20,7 @@ const AppBar: React.FC = () => {
   return (
     <div className="relative flex w-full items-center justify-center gap-3 p-2">
       <img
-        src="/images/adenium-pink.png"
+        src={adeniumPink}
         alt="Adenium Pink"
         className="ml-4 h-16 w-16 rounded-full object-cover object-top drop-shadow"
       />

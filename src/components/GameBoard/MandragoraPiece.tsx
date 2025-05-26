@@ -1,5 +1,10 @@
 import {motion} from 'framer-motion';
 
+import adeniumPink from '@/assets/images/adenium-pink.png';
+import citrillusGreen from '@/assets/images/citrillus-green.png';
+import korriganBlack from '@/assets/images/korrigan-black.png';
+import mandragoraWhite from '@/assets/images/mandragora-white.png';
+import pachypodiumBlack from '@/assets/images/pachypodium-black.png';
 import type {PieceColor, PieceType} from '../../types';
 
 type MandragoraPieceProps = {
@@ -7,18 +12,26 @@ type MandragoraPieceProps = {
   color: PieceColor;
 };
 
+function getImagePath(type: PieceType) {
+  switch (type) {
+    case 'Adenium':
+      return adeniumPink;
+    case 'Citrillus':
+      return citrillusGreen;
+    case 'Korrigan':
+      return korriganBlack;
+    case 'Mandragora':
+      return mandragoraWhite;
+    case 'Pachypodium':
+      return pachypodiumBlack;
+  }
+}
+
 const MandragoraPiece: React.FC<MandragoraPieceProps & {showLabel?: boolean}> = ({
   type,
   color,
   showLabel,
 }) => {
-  const getImagePath = () => {
-    if (type === 'Mandragora') {
-      return '/images/mandragora-white.png';
-    }
-    return `/images/${type.toLowerCase()}-${color.toLowerCase()}.png`;
-  };
-
   const shouldFlip = type === 'Korrigan' || type === 'Pachypodium';
 
   return (
@@ -36,7 +49,7 @@ const MandragoraPiece: React.FC<MandragoraPieceProps & {showLabel?: boolean}> = 
         </div>
       )}
       <img
-        src={getImagePath()}
+        src={getImagePath(type)}
         alt={`${color} ${type}`}
         className={`h-full w-full transform object-contain transition-all duration-200 ${shouldFlip ? 'scale-x-[-1]' : ''} drop-shadow-[0_0_4px_rgba(255,255,255,0.5)] filter`}
       />
