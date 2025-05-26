@@ -26,7 +26,7 @@ Examples of unacceptable behavior include:
 
 ## Enforcement
 
-If you experience or witness unacceptable behavior, please report it to me at mandragora-mania@norandabrown.com. I will review and investigate all complaints promptly and fairly, and take appropriate action as needed.
+If you experience or witness unacceptable behavior, please report it to mandragora-mania@norandabrown.com. I will review and investigate all complaints promptly and fairly, and take appropriate action as needed.
 
 I am committed to respecting the privacy and security of anyone who reports an incident.
 
