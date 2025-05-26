@@ -105,7 +105,10 @@ const GameStatsModal: React.FC<GameStatsModalProps> = ({state, statsOpen, setSta
 
   return (
     <Dialog open={statsOpen} onOpenChange={setStatsOpen}>
-      <DialogContent className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl border border-slate-700 bg-slate-900 p-8 shadow-2xl">
+      <DialogContent
+        className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl border border-slate-700 bg-slate-900 p-8 shadow-2xl"
+        onOpenAutoFocus={(e: Event) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle className="mb-4 text-center text-3xl font-bold text-pink-400">
             Game Stats

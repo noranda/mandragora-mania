@@ -81,12 +81,7 @@ const AnalyzerRulesModal: React.FC<AnalyzerRulesModalProps> = ({open, onOpenChan
             <span className="text-pink-300">-100 to 100</span> scale.
           </li>
           <li>
-            If not penalized: minimum value is <span className="text-pink-300">0</span> (no move can
-            be worse than neutral unless penalized).
-          </li>
-          <li>
-            If penalized: maximum value is <span className="text-pink-300">0</span> (penalized moves
-            cannot be positive).
+            <b>Interpretation:</b> Positive is good, negative is bad, zero is neutral.
           </li>
         </ul>
         <p className="mt-4 text-sm text-slate-300">

@@ -54,7 +54,7 @@ Based on the game rules, the following strategic elements are important:
 
 ## 6. Normalization
 
-- After all calculations, the total value is normalized to a **-100 to 100** scale.
+- **Non-penalized moves:** After all calculations, the total value is normalized to range from -100 (very bad) to +100 (very good).
 - **Rationale:** This makes it easy to interpret move quality: positive is good, negative is bad, zero is neutral.
 
 ---

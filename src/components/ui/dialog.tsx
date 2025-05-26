@@ -28,14 +28,32 @@ const DialogOverlay: React.FC<{
 );
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
-const DialogContent: React.FC<{
+type DialogContentProps = {
   className?: string;
   children?: React.ReactNode;
   ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Content>>;
-}> = ({className, children, ref, ...props}) => (
+  onOpenAutoFocus?: (event: Event) => void;
+  onCloseAutoFocus?: (event: Event) => void;
+};
+
+const DialogContent: React.FC<DialogContentProps> = ({
+  className,
+  children,
+  ref,
+  onOpenAutoFocus,
+  onCloseAutoFocus,
+  ...props
+}) => (
   <DialogPortal>
     <DialogOverlay />
-    <DialogPrimitive.Content asChild {...props} ref={ref} forceMount>
+    <DialogPrimitive.Content
+      asChild
+      {...props}
+      ref={ref}
+      forceMount
+      onOpenAutoFocus={onOpenAutoFocus}
+      onCloseAutoFocus={onCloseAutoFocus}
+    >
       <motion.div
         initial={{opacity: 0, scale: 0.96, x: '-50%', y: '-40%'}}
         animate={{opacity: 1, scale: 1, x: '-50%', y: '-50%'}}
