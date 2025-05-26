@@ -1,66 +1,110 @@
 import React from 'react';
 import {AnimatePresence, motion} from 'framer-motion';
 
-import type {GameArea, MandragoraPiece} from '../types';
+import {makeMove} from '@/utils/gameLogic';
+import {isValidMove} from '@/utils/gameMechanics';
+import {getDistributionPattern} from '@/utils/movementPaths';
+import type {GameArea, MandragoraPiece} from '../../types';
 import MandragoraPieceComponent from './MandragoraPiece';
+import type {GameAction, GameState} from './useGameReducer';
 
-type HexagonalBoardProps = {
-  areas: GameArea[];
-  onAreaClick: (areaId: number) => void;
-  isValidMove: (areaId: number) => boolean;
-  recommendedMoves?: {
-    areaId: number;
-    rank: number; // 1 is best move, 2 is second best, etc.
-  }[];
-  movingPieces?: {
-    piece: MandragoraPiece;
-    fromArea: number;
-    toArea: number;
-    delay: number;
-  }[];
-  basePositions: {
-    opponent: DOMRect | null;
-    player: DOMRect | null;
-  };
+// UI state type for refs and positions
+export type HexagonalBoardUIState = {
+  basePositions: {opponent: DOMRect | null; player: DOMRect | null};
   boardRef: React.RefObject<HTMLDivElement>;
   hexPositions: Record<number, DOMRect>;
-  isPlayerTurn: boolean;
 };
 
-const HexagonalBoard: React.FC<HexagonalBoardProps> = ({
-  areas,
-  onAreaClick,
-  isValidMove,
-  recommendedMoves = [],
-  movingPieces = [],
-  basePositions,
-  boardRef,
-  hexPositions,
-  isPlayerTurn,
-}) => {
+type HexagonalBoardProps = {
+  state: GameState;
+  dispatch: React.Dispatch<GameAction>;
+  uiState: HexagonalBoardUIState;
+};
+
+const HexagonalBoard: React.FC<HexagonalBoardProps> = ({state, dispatch, uiState}) => {
+  // Move handleAreaClick logic here
+  const handleAreaClick = async (areaId: number) => {
+    if (state.isGameOver || !state.gameStarted) return;
+    if (!isValidMove(areaId, state.areas, state.isPlayerTurn)) return;
+    const sourceArea = state.areas.find((a: GameArea) => a.id === areaId);
+    if (!sourceArea) return;
+    // Calculate piece movements based on the distribution pattern
+    const distributionPattern = getDistributionPattern(areaId, sourceArea.pieces.length, state.isPlayerTurn);
+    // Create animation sequence - pieces move from back to front (last in, first out)
+    const animDelay = 0.25;
+    const animations = [...sourceArea.pieces].reverse().map((piece, index) => ({
+      piece,
+      fromArea: areaId,
+      toArea: distributionPattern[index],
+      delay: index * animDelay,
+    }));
+    // Start animations
+    dispatch({type: 'START_MOVE_ANIMATION', movingPieces: animations});
+    // Wait for all animations to complete before updating game state
+    const totalDuration = animations.length * animDelay + 0.1;
+    await new Promise(resolve => setTimeout(resolve, totalDuration * 1000));
+    // Make the move and get the new state
+    const {newAreas, newPlayerScore, newOpponentScore, extraTurn} = makeMove(
+      areaId,
+      state.areas,
+      state.playerScore,
+      state.opponentScore,
+      state.isPlayerTurn,
+    );
+    // --- Record move ---
+    dispatch({
+      type: 'MAKE_MOVE',
+      areaId,
+      newAreas,
+      newPlayerScore,
+      newOpponentScore,
+      moveRecord: {
+        player: state.isPlayerTurn ? 'player' : 'opponent',
+        fromArea: areaId,
+        toArea: distributionPattern,
+        piecesMoved: [...sourceArea.pieces],
+        timestamp: Date.now(),
+        extraTurn,
+      },
+      extraTurn,
+      isGameOver: (() => {
+        const hasValidMoves = (areasToCheck: GameArea[], isPlayer: boolean) => {
+          return areasToCheck.some(area => {
+            const isPlayerArea = area.allowedPlayer === 'player' || area.allowedPlayer === 'both';
+            const isOpponentArea = area.allowedPlayer === 'opponent' || area.allowedPlayer === 'both';
+            return area.pieces.length > 0 && ((isPlayer && isPlayerArea) || (!isPlayer && isOpponentArea));
+          });
+        };
+        const nextTurn = !extraTurn ? !state.isPlayerTurn : state.isPlayerTurn;
+        return !hasValidMoves(newAreas, nextTurn);
+      })(),
+    });
+    dispatch({type: 'END_MOVE_ANIMATION'});
+  };
+
   // Calculate positions for a hexagonal layout
   const boardLayout = {
     topRow: [
       // Areas 8, 7, 6 (left to right)
-      areas.find(a => a.id === 8),
-      areas.find(a => a.id === 7),
-      areas.find(a => a.id === 6),
+      state.areas.find((a: GameArea) => a.id === 8),
+      state.areas.find((a: GameArea) => a.id === 7),
+      state.areas.find((a: GameArea) => a.id === 6),
     ].filter(Boolean) as GameArea[],
     middleRow: [
       // Areas 2, 4 (left to right)
-      areas.find(a => a.id === 2),
-      areas.find(a => a.id === 4),
+      state.areas.find((a: GameArea) => a.id === 2),
+      state.areas.find((a: GameArea) => a.id === 4),
     ].filter(Boolean) as GameArea[],
     bottomRow: [
       // Areas 1, 3, 5 (left to right)
-      areas.find(a => a.id === 1),
-      areas.find(a => a.id === 3),
-      areas.find(a => a.id === 5),
+      state.areas.find((a: GameArea) => a.id === 1),
+      state.areas.find((a: GameArea) => a.id === 3),
+      state.areas.find((a: GameArea) => a.id === 5),
     ].filter(Boolean) as GameArea[],
   };
 
   return (
-    <div className="relative mx-auto w-full max-w-[1400px]" ref={boardRef}>
+    <div className="relative mx-auto w-full max-w-[1400px]" ref={uiState.boardRef}>
       <div className="relative w-full" style={{aspectRatio: '2/1'}}>
         {/* Hexagonal grid */}
         <div className="flex h-full flex-col items-center justify-center">
@@ -70,10 +114,9 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({
               <HexagonArea
                 key={area.id}
                 area={area}
-                isValidMove={isValidMove(area.id)}
-                onClick={() => onAreaClick(area.id)}
+                isValidMove={isValidMove(area.id, state.areas, state.isPlayerTurn)}
+                onClick={() => handleAreaClick(area.id)}
                 color="green"
-                recommendedMoves={recommendedMoves}
               />
             ))}
           </div>
@@ -84,10 +127,9 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({
               <HexagonArea
                 key={area.id}
                 area={area}
-                isValidMove={isValidMove(area.id)}
-                onClick={() => onAreaClick(area.id)}
+                isValidMove={isValidMove(area.id, state.areas, state.isPlayerTurn)}
+                onClick={() => handleAreaClick(area.id)}
                 color="brown"
-                recommendedMoves={recommendedMoves}
               />
             ))}
           </div>
@@ -98,10 +140,9 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({
               <HexagonArea
                 key={area.id}
                 area={area}
-                isValidMove={isValidMove(area.id)}
-                onClick={() => onAreaClick(area.id)}
+                isValidMove={isValidMove(area.id, state.areas, state.isPlayerTurn)}
+                onClick={() => handleAreaClick(area.id)}
                 color="blue"
-                recommendedMoves={recommendedMoves}
               />
             ))}
           </div>
@@ -110,10 +151,10 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({
 
       {/* Animated pieces layer */}
       {renderMovingPieces({
-        movingPieces,
-        basePositions,
-        hexPositions,
-        parentRef: boardRef,
+        movingPieces: state.movingPieces,
+        basePositions: uiState.basePositions,
+        hexPositions: uiState.hexPositions,
+        parentRef: uiState.boardRef,
       })}
     </div>
   );
@@ -198,10 +239,7 @@ export function renderMovingPieces({
                   : 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.3))',
             }}
           >
-            <MandragoraPieceComponent
-              type={movingPiece.piece.type}
-              color={movingPiece.piece.color}
-            />
+            <MandragoraPieceComponent type={movingPiece.piece.type} color={movingPiece.piece.color} />
           </motion.div>
         );
       })}
@@ -214,16 +252,9 @@ type HexagonAreaProps = {
   isValidMove: boolean;
   onClick: () => void;
   color: 'green' | 'brown' | 'blue';
-  recommendedMoves: {areaId: number; rank: number}[];
 };
 
-const HexagonArea: React.FC<HexagonAreaProps> = ({
-  area,
-  isValidMove,
-  onClick,
-  color,
-  recommendedMoves,
-}) => {
+const HexagonArea: React.FC<HexagonAreaProps> = ({area, isValidMove, onClick, color}) => {
   const colorClasses = {
     green: 'bg-gradient-to-br from-green-700 to-green-600 text-green-100',
     brown: 'bg-[#8b7355] text-amber-100',
@@ -237,11 +268,7 @@ const HexagonArea: React.FC<HexagonAreaProps> = ({
 
     // Fill rows from bottom up with their capacities
     const rowCapacities = [4, 5, 6, 5, 4];
-    for (
-      let i = 0;
-      i < rowCapacities.length && remainingPieces.length > 0;
-      i++
-    ) {
+    for (let i = 0; i < rowCapacities.length && remainingPieces.length > 0; i++) {
       const capacity = rowCapacities[i];
       rows[i] = remainingPieces.slice(0, capacity);
       remainingPieces = remainingPieces.slice(capacity);
@@ -277,16 +304,10 @@ const HexagonArea: React.FC<HexagonAreaProps> = ({
 
       <div
         className={`absolute left-1/2 top-[8%] -translate-x-1/2 text-base font-bold ${
-          recommendedMoves.find(
-            move => move.areaId === area.id && move.rank === 1,
-          )
-            ? 'bg-yellow-400 text-black'
-            : 'bg-black/40 text-white backdrop-blur-sm'
+          isValidMove ? 'bg-yellow-400 text-black' : 'bg-black/40 text-white backdrop-blur-sm'
         } z-50 rounded-full px-3 py-1`}
       >
-        {recommendedMoves.find(
-          move => move.areaId === area.id && move.rank === 1,
-        ) && <span className="mr-1">★</span>}
+        {isValidMove && <span className="mr-1">★</span>}
         Area {area.id}
       </div>
 
@@ -340,15 +361,8 @@ const HexagonArea: React.FC<HexagonAreaProps> = ({
               }}
             >
               {row.map((piece, pieceIndex) => (
-                <div
-                  key={`${rowIndex}-${pieceIndex}`}
-                  className="aspect-2/3 w-[11%]"
-                >
-                  <MandragoraPieceComponent
-                    type={piece.type}
-                    color={piece.color}
-                    showLabel={false}
-                  />
+                <div key={`${rowIndex}-${pieceIndex}`} className="aspect-2/3 w-[11%]">
+                  <MandragoraPieceComponent type={piece.type} color={piece.color} showLabel={false} />
                 </div>
               ))}
             </div>

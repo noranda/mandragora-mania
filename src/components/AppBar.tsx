@@ -39,7 +39,7 @@ const AppBar: React.FC = () => {
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuTrigger className="hidden bg-slate-700 hover:border-pink-400 md:block">
-                Rules
+                <span className="mr-1">Rules</span>
               </NavigationMenuTrigger>
 
               <NavigationMenuTrigger className="bg-slate-700 hover:border-pink-400 md:block md:hidden" />
@@ -69,10 +69,7 @@ const AppBar: React.FC = () => {
 
       <GameRulesModal open={rulesOpen} onOpenChange={setRulesOpen} />
 
-      <AnalyzerRulesModal
-        open={analyzerRulesOpen}
-        onOpenChange={setAnalyzerRulesOpen}
-      />
+      <AnalyzerRulesModal open={analyzerRulesOpen} onOpenChange={setAnalyzerRulesOpen} />
     </div>
   );
 };

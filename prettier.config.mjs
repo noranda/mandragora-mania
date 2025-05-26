@@ -1,8 +1,9 @@
 /** @type {import('@types/prettier').Config} */
 export default {
-  plugins: ['prettier-plugin-tailwindcss'],
-  singleQuote: true,
-  bracketSpacing: false,
   arrowParens: 'avoid',
+  bracketSpacing: false,
+  plugins: ['prettier-plugin-tailwindcss'],
+  printWidth: 100,
+  singleQuote: true,
   tailwindFunctions: ['twJoin', 'twMerge'],
 };
