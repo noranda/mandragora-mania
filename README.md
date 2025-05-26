@@ -52,7 +52,7 @@ Contributions are welcome! Please open issues or pull requests.
 
 ## Credits
 
-Created by Noranda Brown and contributors.
+Created by Noranda Brown and contributors
 
 - Reddit: [u/noranda](https://www.reddit.com/user/noranda)
 - Email: mandragora-mania@norandabrown.com
