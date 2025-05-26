@@ -41,7 +41,7 @@ Based on the game rules, the following strategic elements are important:
 ## 4. Penalization for Opponent Opportunities
 
 - **-100** if your move grants the opponent a new extra turn opportunity.
-  - Explanation: `WARNING: grants opponent an extra move`
+  - Explanation: `WARNING: grants opponent an extra move opportunity`
 - **-80** if your move grants the opponent a new scoring opportunity.
   - Explanation: `WARNING: grants opponent scoring opportunity`
 - **Rationale:** Moves that set up the opponent for big gains are heavily penalized.
@@ -55,8 +55,6 @@ Based on the game rules, the following strategic elements are important:
 ## 6. Normalization
 
 - After all calculations, the total value is normalized to a **-100 to 100** scale.
-- **If not penalized:** The minimum value is **0** (no move can be worse than neutral unless penalized).
-- **If penalized:** The maximum value is **0** (penalized moves cannot be positive, even if other factors would make them so).
 - **Rationale:** This makes it easy to interpret move quality: positive is good, negative is bad, zero is neutral.
 
 ---

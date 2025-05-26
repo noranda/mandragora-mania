@@ -298,16 +298,6 @@ export function analyzeMoves(areas: GameArea[], isPlayerTurn: boolean): MoveAnal
       !isPlayerTurn,
     );
 
-    // If look-ahead penalization, return penalized move immediately
-    if (futureWarning) {
-      const explanation = `Area ${area.id}: ${futureWarning}`;
-      return {
-        areaId: area.id,
-        explanation,
-        totalValue: 0,
-      };
-    }
-
     // Penalization for opponent opportunities
     const penalization = getOpponentThreatPenalty(areas, isPlayerTurn, newAreas);
     let warning: string | undefined = undefined;
@@ -316,33 +306,30 @@ export function analyzeMoves(areas: GameArea[], isPlayerTurn: boolean): MoveAnal
       warning = penalization.warning;
       isPenalized = true;
     }
-    // If penalized (immediate), force value to 0 and skip normalization
-    if (isPenalized) {
-      const explanation = `Area ${area.id}: ${warning}`;
-      return {
-        areaId: area.id,
-        explanation,
-        totalValue: 0,
-      };
+    if (futureWarning) {
+      warning = futureWarning;
+      isPenalized = true;
     }
     // Normalize at the end
-    const normalizedValue = normalizeAnalyzerValue(rawValue, false);
-    // Build explanation
+    const normalizedValue = normalizeAnalyzerValue(rawValue, isPenalized);
+    // Build explanation (always show all values)
     let explanation = `Area ${area.id}: `;
     const reasons: string[] = [];
-    if (immediatePoints > 0) reasons.push(`gains ${immediatePoints} points`);
-    if (extraTurn) reasons.push('★ EXTRA TURN - last piece lands in base');
-    if (boardPresenceBonus > 0) reasons.push(`controls ${boardPresenceBonus} more pieces`);
-    if (perfectMovesBonus > 0) reasons.push(`sets up ${perfectMovesBonus} new perfect moves`);
-    if (avgPieceValueBonus > 0)
-      reasons.push(`increases avg piece value by ${avgPieceValueBonus.toFixed(2)}`);
-    if (flexibilityBonus > 0) reasons.push(`adds ${flexibilityBonus} new valid moves`);
-    if (futureValue > 0) reasons.push(`strong future position (${futureValue.toFixed(1)})`);
-    explanation += reasons.join(', ');
+    reasons.push(`gains ${immediatePoints} point${immediatePoints === 1 ? '' : 's'}`);
+    reasons.push(extraTurn ? '★ EXTRA TURN - last piece lands in base' : '');
+    reasons.push(`controls ${boardPresenceBonus} more pieces`);
+    reasons.push(`sets up ${perfectMovesBonus} new perfect moves`);
+    reasons.push(`increases avg piece value by ${avgPieceValueBonus.toFixed(2)}`);
+    reasons.push(`adds ${flexibilityBonus} new valid moves`);
+    reasons.push(`future position value: ${futureValue.toFixed(1)}`);
+    explanation += reasons.filter(Boolean).join(', ');
+    if (isPenalized && warning) {
+      explanation += ` | ${warning}`;
+    }
     return {
       areaId: area.id,
       explanation,
-      totalValue: normalizedValue, // This will be 0 for penalized moves
+      totalValue: normalizedValue,
     };
   });
 

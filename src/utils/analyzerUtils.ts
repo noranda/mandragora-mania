@@ -8,16 +8,11 @@ import {simulateMove} from './moveAnalyzer';
  * Calculates the total number of pieces controlled by the player (including those in base).
  * See: Board Presence Bonus in ANALYZER_SCORING_RULES.md
  */
-export function calculateBoardPresenceBonus(
-  areas: GameArea[],
-  isPlayerTurn: boolean,
-): number {
+export function calculateBoardPresenceBonus(areas: GameArea[], isPlayerTurn: boolean): number {
   const playerAreas = isPlayerTurn
     ? [0, 1, 3, 5, 2, 4] // Player's base, owned, and shared
     : [9, 6, 7, 8, 2, 4]; // Opponent's base, owned, and shared
-  return areas
-    .filter(a => playerAreas.includes(a.id))
-    .reduce((sum, a) => sum + a.pieces.length, 0);
+  return areas.filter(a => playerAreas.includes(a.id)).reduce((sum, a) => sum + a.pieces.length, 0);
 }
 
 /**
@@ -25,10 +20,7 @@ export function calculateBoardPresenceBonus(
  * For each area the player can move from, simulate the move and count if it ends in base.
  * See: Future Perfect Moves Bonus in ANALYZER_SCORING_RULES.md
  */
-export function calculateFuturePerfectMovesBonus(
-  areas: GameArea[],
-  isPlayerTurn: boolean,
-): number {
+export function calculateFuturePerfectMovesBonus(areas: GameArea[], isPlayerTurn: boolean): number {
   const playerAreas = areas.filter(
     a =>
       a.pieces.length > 0 &&
@@ -49,10 +41,7 @@ export function calculateFuturePerfectMovesBonus(
  * Calculates the average value of pieces controlled by the player (including those in base).
  * See: Average Piece Value Bonus in ANALYZER_SCORING_RULES.md
  */
-export function calculateAveragePieceValueBonus(
-  areas: GameArea[],
-  isPlayerTurn: boolean,
-): number {
+export function calculateAveragePieceValueBonus(areas: GameArea[], isPlayerTurn: boolean): number {
   const playerAreas = isPlayerTurn ? [0, 1, 3, 5, 2, 4] : [9, 6, 7, 8, 2, 4];
   const pieces: MandragoraPiece[] = [];
   for (const area of areas) {
@@ -69,10 +58,7 @@ export function calculateAveragePieceValueBonus(
  * Calculates the number of valid moves the player has (flexibility).
  * See: Flexibility Bonus in ANALYZER_SCORING_RULES.md
  */
-export function calculateFlexibilityBonus(
-  areas: GameArea[],
-  isPlayerTurn: boolean,
-): number {
+export function calculateFlexibilityBonus(areas: GameArea[], isPlayerTurn: boolean): number {
   return areas.filter(
     a =>
       a.pieces.length > 0 &&
@@ -123,18 +109,14 @@ export function getOpponentThreatPenalty(
   let afterScore = 0;
   for (const areaA of opponentAreasAfter) {
     if (areaA.allowedPlayer === 'opponent' || areaA.allowedPlayer === 'both') {
-      const {scoringPieces, extraTurn} = simulateMove(
-        areaA.id,
-        newAreas,
-        false,
-      );
+      const {scoringPieces, extraTurn} = simulateMove(areaA.id, newAreas, false);
       if (extraTurn) afterExtraTurn++;
       if (scoringPieces.length > 0) afterScore++;
     }
   }
   // Only penalize if the number of opportunities increases
   if (afterExtraTurn > beforeExtraTurn) {
-    return {deduction: -100, warning: 'WARNING: grants opponent an extra move'};
+    return {deduction: -100, warning: 'WARNING: grants opponent an extra move opportunity'};
   } else if (afterScore > beforeScore) {
     return {
       deduction: -80,
@@ -146,19 +128,9 @@ export function getOpponentThreatPenalty(
 
 /**
  * Normalizes the analyzer value to -100 to 100.
- * If not penalized, minimum is 0. If penalized, maximum is 0.
  * See: Normalization in ANALYZER_SCORING_RULES.md
  */
-export function normalizeAnalyzerValue(
-  rawValue: number,
-  penalized: boolean,
-): number {
-  const norm = Math.max(-100, Math.min(100, rawValue));
-  if (penalized) {
-    // Penalized moves cannot be positive
-    return Math.min(norm, 0);
-  } else {
-    // Non-penalized moves cannot be negative
-    return Math.max(norm, 0);
-  }
+export function normalizeAnalyzerValue(rawValue: number, _penalized: boolean): number {
+  // Always clamp to -100 to 100, regardless of penalization
+  return Math.max(-100, Math.min(100, rawValue));
 }

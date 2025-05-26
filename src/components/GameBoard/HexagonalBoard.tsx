@@ -35,8 +35,9 @@ const HexagonalBoard: React.FC<HexagonalBoardProps> = ({state, dispatch, uiState
   const playerScoreValue = calculatePoints(state.playerScore, true);
   const opponentScoreValue = calculatePoints(state.opponentScore, false);
 
-  // Find the recommended move areaId (first in moveAnalysis, if any)
-  const recommendedMoveAreaId = state.moveAnalysis.length > 0 ? state.moveAnalysis[0].areaId : null;
+  // Find the recommended move areaId (first in sorted moveAnalysis, if any)
+  const sortedMoveAnalysis = [...state.moveAnalysis].sort((a, b) => b.totalValue - a.totalValue);
+  const recommendedMoveAreaId = sortedMoveAnalysis.length > 0 ? sortedMoveAnalysis[0].areaId : null;
 
   // Move handleAreaClick logic here
   const handleAreaClick = async (areaId: number) => {
