@@ -24,12 +24,15 @@ NavigationMenu.displayName = NavigationMenuPrimitive.Root.displayName;
 const NavigationMenuList: React.FC<{
   className?: string;
   ref?: React.Ref<React.ComponentRef<typeof NavigationMenuPrimitive.List>>;
-}> = ({className, ref, ...props}) => (
+  children?: React.ReactNode;
+}> = ({className, ref, children, ...props}) => (
   <NavigationMenuPrimitive.List
     ref={ref}
     className={cn('group flex flex-1 list-none items-center justify-center space-x-1', className)}
     {...props}
-  />
+  >
+    {children}
+  </NavigationMenuPrimitive.List>
 );
 NavigationMenuList.displayName = NavigationMenuPrimitive.List.displayName;
 
@@ -62,7 +65,8 @@ NavigationMenuTrigger.displayName = NavigationMenuPrimitive.Trigger.displayName;
 const NavigationMenuContent: React.FC<{
   className?: string;
   ref?: React.Ref<React.ComponentRef<typeof NavigationMenuPrimitive.Content>>;
-}> = ({className, ref, ...props}) => (
+  children?: React.ReactNode;
+}> = ({className, ref, children, ...props}) => (
   <NavigationMenuPrimitive.Content
     ref={ref}
     className={cn(
@@ -70,7 +74,9 @@ const NavigationMenuContent: React.FC<{
       className,
     )}
     {...props}
-  />
+  >
+    {children}
+  </NavigationMenuPrimitive.Content>
 );
 NavigationMenuContent.displayName = NavigationMenuPrimitive.Content.displayName;
 
