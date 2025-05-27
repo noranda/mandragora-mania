@@ -9,7 +9,7 @@
  */
 import {useReducer} from 'react';
 
-import {boardPatterns} from '../../config/boardPatterns';
+import {BOARD_PATTERNS} from '@/constants/boardPatterns';
 import {
   type GameArea,
   type GameStateSnapshot,
@@ -108,7 +108,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'INIT_GAME': {
       // Start a new game with the selected pattern and who goes first
-      const pattern = boardPatterns.find(p => p.id === action.patternId);
+      const pattern = BOARD_PATTERNS.find(p => p.id === action.patternId);
       if (!pattern) return state;
       return {
         ...initialGameState,

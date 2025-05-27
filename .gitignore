@@ -34,3 +34,6 @@ coverage
 *.sw?
 
 *storybook.log
+
+# Ignore analyzer logs
+/docs/analyzer_logs/

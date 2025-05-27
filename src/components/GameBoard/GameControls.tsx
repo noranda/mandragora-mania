@@ -6,6 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {OPPONENTS} from '@/constants/opponents';
 import {type GameAction, type GameState} from './useGameReducer';
 
 type PatternOption = {id: string; name: string};
@@ -15,19 +16,6 @@ type GameControlsProps = {
   dispatch: React.Dispatch<GameAction>;
   patternOptions: PatternOption[];
 };
-
-const OPPONENTS = [
-  'Green Thumb Moogle',
-  'Monsieur Kupont',
-  'Susuroon',
-  'Little Sheep',
-  'Yeestog',
-  'Atelloune',
-  'Kuyin Hathdenna',
-  'Kupofried',
-  'Chacharoon',
-  'Sakura',
-];
 
 const GameControls: React.FC<GameControlsProps> = ({state, dispatch, patternOptions}) => {
   const startResetDisabled =

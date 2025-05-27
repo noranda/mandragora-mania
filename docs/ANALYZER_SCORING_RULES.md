@@ -1,66 +1,58 @@
-# Mandragora Mania - Analyzer Scoring Rules
+# Mandragora Mania - Analyzer Scoring Rules (Modern Analyzer)
 
-This document describes the scoring system used by the move analyzer to evaluate and rank possible moves. The analyzer's goal is to recommend moves that maximize your chances of winning, based on both immediate and strategic factors.
-
-Based on the game rules, the following strategic elements are important:
-
-- Controlling more pieces (board presence).
-- Setting up future scoring or extra turn opportunities (perfect moves).
-- Maximizing the value of pieces you control (high-value Mandragoras).
-- Denying the opponent opportunities (penalization).
-- Immediate scoring and extra turns (core to winning).
-- Flexibility and move options (not getting stuck).
+This document describes the scoring system used by the minimax/alpha-beta **move analyzer** to evaluate and rank possible moves. The analyzer is designed to recommend moves that maximize your chances of winning, using a combination of immediate rewards, lookahead, and phase-aware evaluation.
 
 ---
 
 ## 1. Immediate Points
 
 - **+10** for each point scored (i.e., each piece that lands in your base and scores).
-- **Rationale:** Scoring is the primary way to win, so it is heavily weighted.
+- **Rationale:** Scoring is the primary way to win, so it is heavily weighted in the evaluation.
 
 ## 2. Extra Turn Bonus
 
-- **+90** if the move grants an extra turn (the last piece lands in your base).
-- **Rationale:** Extra turns are extremely valuable, often leading to chain moves and more scoring.
+- **Explained:** If a move grants an extra turn (the last piece lands in your base), this is reflected in the move's explanation and the minimax search continues with the same player.
+- **Rationale:** Extra turns are extremely valuable, often leading to chain moves and more scoring. The analyzer's lookahead will recursively evaluate the value of these chains.
 
-## 3. Strategic Value Bonuses
+## 3. Minimax Lookahead (with Alpha-Beta Pruning)
 
-- **Board Presence:**
-  - **+5** for each net increase in the number of pieces you control after the move (including those moved to your base).
-  - _Example:_ If you control 10 pieces before and 12 after, you get +10.
-- **Future Perfect Moves:**
-  - **+20** for each new possible move (after your move) that would result in a perfect score (last piece lands in your base).
-  - _Example:_ If you have 1 such move before and 3 after, you get +40.
-- **Average Piece Value:**
-  - **+2** for each 0.1 increase in the average value of pieces you control after the move (compared to before).
-  - _Example:_ If your average piece value goes from 1.0 to 1.3, you get +6.
-- **Flexibility:**
-  - **+3** for each additional valid move you have after the move (compared to before).
-  - _Example:_ If you have 4 valid moves before and 6 after, you get +6.
+- The analyzer simulates up to a configurable depth (default: 3 moves ahead) using a minimax algorithm with alpha-beta pruning.
+- **Discount Factor:** The value of future moves is multiplied by a discount factor (**0.8** by default) to prioritize immediate gains but still reward strong follow-ups.
+- **Rationale:** This rewards moves that set up strong sequences, not just immediate points.
 
-## 4. Penalization for Opponent Opportunities
+## 4. Phase-Aware Evaluation Function
 
-- **-50** if your move grants the opponent a new extra turn opportunity.
-  - Explanation: `WARNING: grants opponent an extra move opportunity`
-- **-80** if your move grants the opponent a new scoring opportunity.
-  - Explanation: `WARNING: grants opponent scoring opportunity`
-- **Rationale:** Moves that set up the opponent for big gains are heavily penalized.
-
-## 5. Look-Ahead Value
-
-- The analyzer simulates up to 3 moves ahead (using a minimax-like approach).
-- The value of the best future move is multiplied by a discount factor (**0.8**) and added to the current move's value.
-- **Rationale:** This rewards moves that set up strong follow-ups, not just immediate gains.
-
-## 6. Normalization
-
-- **Non-penalized moves:** After all calculations, the total value is normalized to range from -100 (very bad) to +100 (very good).
-- **Rationale:** This makes it easy to interpret move quality: positive is good, negative is bad, zero is neutral.
+- The analyzer uses a different evaluation function depending on the phase of the game:
+  - **Early Game (many pieces left):**
+    - Prioritizes mobility (number of valid moves) and extra turn potential.
+    - Formula: `(playerScore - opponentScore) * 5 + mobility * 3`
+    - **Mobility:** Number of valid moves available to the current player.
+  - **Late Game (few pieces left):**
+    - Prioritizes the score difference.
+    - Formula: `(playerScore - opponentScore) * 15`
+- **Rationale:** Early in the game, flexibility and options are important; late in the game, maximizing your score lead is critical.
 
 ---
 
-**Note:**
+## Additional Notes
 
-- All bonuses and penalties are applied before normalization.
-- The analyzer does not use arbitrary minimums for specific move types; the above rules apply to all moves.
-- This system is designed to be transparent and easily adjustable as the game evolves.
+- **No Arbitrary Bonuses:** The analyzer does not use explicit bonuses for board presence, perfect moves, average piece value, or flexibility. All strategic value is captured by the phase-aware evaluation and lookahead.
+- **No Explicit Opponent Penalties:** Instead of explicit penalization for opponent opportunities, the minimax search naturally accounts for the best possible opponent responses.
+- **Transparency:** The system is designed to be transparent and easily adjustable as the game evolves. All scoring logic is contained in the analyzer code and this document.
+
+---
+
+**Summary Table:**
+
+| Rule                  | Value/Formula                                  | Rationale                                    |
+| --------------------- | ---------------------------------------------- | -------------------------------------------- |
+| Immediate Points      | +10 per point scored                           | Scoring is the main objective                |
+| Extra Turn            | Recursively evaluated in lookahead             | Extra turns are highly valuable              |
+| Minimax Lookahead     | Up to 3 moves, discount factor 0.8             | Rewards strong sequences, not just immediacy |
+| Early Game Evaluation | (playerScore - opponentScore) * 5 + mobility*3 | Flexibility is key early                     |
+| Late Game Evaluation  | (playerScore - opponentScore) \* 15            | Score lead is key late                       |
+| Score Range           | Unbounded (not clamped/normalized)             | Reflects true value of move                  |
+
+---
+
+**If you have questions or want to adjust the analyzer, see the comments in `src/utils/moveAnalyzer.ts`.**

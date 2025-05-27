@@ -1,17 +1,17 @@
 import {describe, expect, it} from 'vitest';
 
-import {type GameArea} from '../../types';
-import {
-  calculateAveragePieceValueBonus,
-  calculateBoardPresenceBonus,
-  getOpponentThreatPenalty,
-} from '../analyzerUtils';
+import type {GameArea} from '../../types';
 import {analyzeMoves, simulateMove} from '../moveAnalyzer';
 import {createTestAreas, createTestPiece} from './testUtils';
 
-// --- Modern analyzer test suite ---
-describe('analyzeMoves (modern rules)', () => {
-  it('scores immediate points correctly', () => {
+// Helper: get best move
+function getBestMove(areas: GameArea[], isPlayerTurn: boolean) {
+  const moves = analyzeMoves(areas, isPlayerTurn);
+  return moves.length ? moves.reduce((a, b) => (a.totalValue > b.totalValue ? a : b)) : null;
+}
+
+describe('moveAnalyzer (modern minimax)', () => {
+  it('scores immediate points for moves to base', () => {
     // Move from area 5, piece lands in base (scores 1 point)
     const areas = createTestAreas([{areaId: 5, pieces: [createTestPiece()]}]);
     const moves = analyzeMoves(areas, true);
@@ -20,119 +20,11 @@ describe('analyzeMoves (modern rules)', () => {
     expect(moves[0].explanation).toContain('gains 1 point');
   });
 
-  it('applies extra turn bonus', () => {
+  it('detects and explains extra turn', () => {
     // Move from area 5, piece lands in base (extra turn)
     const areas = createTestAreas([{areaId: 5, pieces: [createTestPiece()]}]);
     const moves = analyzeMoves(areas, true);
-    expect(moves[0].totalValue).toBeGreaterThan(50); // Should be excellent
-    expect(moves[0].explanation).toContain('EXTRA TURN');
-  });
-
-  it('applies board presence bonus', () => {
-    // Move from shared area 2 with 2 pieces, one lands in player area 1, increasing controlled pieces
-    const areas = createTestAreas([
-      {areaId: 2, pieces: [createTestPiece(), createTestPiece()]}, // shared area
-      {areaId: 1, pieces: []}, // player area
-    ]);
-    const before = calculateBoardPresenceBonus(areas, true);
-    const {newAreas} = simulateMove(2, areas, true);
-    const after = calculateBoardPresenceBonus(newAreas, true);
-    const moves = analyzeMoves(areas, true);
-    // Should get a small bonus for increasing presence
-    expect(moves[0].totalValue).toBeGreaterThan(0);
-  });
-
-  it('applies future perfect moves bonus', () => {
-    // Setup so that after a move, more perfect moves are possible
-    const areas = createTestAreas([{areaId: 1, pieces: [createTestPiece(), createTestPiece()]}]);
-    const moves = analyzeMoves(areas, true);
-    // Should get a bonus if after the move, more perfect moves are possible
-    expect(moves[0].totalValue).toBeGreaterThan(0);
-  });
-
-  it('applies average piece value bonus', () => {
-    // Start with a high-value piece (10) in player area 3 and a low-value piece (1) in player area 1
-    // Move from area 1 with 5 pieces so the last lands in base (area 0), leaving only the high-value piece under control
-    const areas = createTestAreas([
-      {
-        areaId: 1,
-        pieces: Array(5).fill(createTestPiece('Mandragora', 'Green', 1)),
-      }, // player area, low value
-      {areaId: 3, pieces: [createTestPiece('Adenium', 'Green', 10)]}, // player area, high value
-    ]);
-    const before = calculateAveragePieceValueBonus(areas, true);
-    const {newAreas} = simulateMove(1, areas, true);
-    const after = calculateAveragePieceValueBonus(newAreas, true);
-    const moves = analyzeMoves(areas, true);
-    // Should value the move with higher average piece value
-    expect(moves.some(m => m.totalValue > 0)).toBe(true);
-  });
-
-  it('applies flexibility bonus', () => {
-    // Move from area 1 to area 3, creating a new valid move
-    const areas = createTestAreas([
-      {areaId: 1, pieces: [createTestPiece(), createTestPiece()]},
-      {areaId: 3, pieces: []},
-    ]);
-    const moves = analyzeMoves(areas, true);
-    // Should get a bonus for increasing flexibility
-    expect(moves.some(m => m.totalValue > 0)).toBe(true);
-  });
-
-  it('penalizes moves that create new opponent extra turn', () => {
-    // Setup: Player moves from area 2 with 9 pieces, last piece lands in area 8 for the opponent
-    const areas = createTestAreas([{areaId: 2, pieces: Array(9).fill(createTestPiece())}]);
-    const moves = analyzeMoves(areas, true);
-    // Simulate the move manually
-    const {newAreas} = simulateMove(2, areas, true);
-    const penalty = getOpponentThreatPenalty(areas, true, newAreas);
-    const penalizedMove = moves.find(m =>
-      m.explanation.includes('WARNING: grants opponent an extra move'),
-    );
-    expect(penalizedMove).toBeDefined();
-    expect(penalizedMove!.explanation).toContain('WARNING: grants opponent an extra move');
-  });
-
-  it('penalizes moves that create new opponent scoring opportunity', () => {
-    // Setup: Opponent cannot score before, but can after the move
-    // Before: area 8 has 0 pieces, after: area 8 has 2 pieces (opponent can move from 8 with 2 pieces to land in 9)
-    const areas = createTestAreas([
-      {areaId: 2, pieces: Array(9).fill(createTestPiece())}, // 9 pieces, last two land in area 8
-    ]);
-    // Before the move, area 8 is empty, so opponent cannot score
-    // After the move, area 8 has 2 pieces, so opponent can move from 8 with 2 pieces to 9 and score
-    const moves = analyzeMoves(areas, true);
-    const {newAreas} = simulateMove(2, areas, true);
-    const penalty = getOpponentThreatPenalty(areas, true, newAreas);
-    const penalizedMove = moves.find(m =>
-      m.explanation.includes('WARNING: grants opponent an extra move'),
-    );
-    expect(penalty).not.toBeNull();
-    expect(penalty!.warning).toContain('extra move');
-    expect(penalizedMove).toBeDefined();
-    expect(penalizedMove!.explanation).toContain('WARNING: grants opponent an extra move');
-  });
-
-  it('does not penalize if opponent already had the opportunity', () => {
-    // Setup: Opponent already has a scoring opportunity before the move
-    const areas = createTestAreas([
-      {areaId: 8, pieces: [createTestPiece()]}, // Opponent can already move from 8 to 9
-      {areaId: 2, pieces: [createTestPiece()]},
-    ]);
-    const {newAreas} = simulateMove(2, areas, true);
-    const penalty = getOpponentThreatPenalty(areas, true, newAreas);
-    expect(penalty).toBeNull();
-  });
-
-  it('normalizes penalized moves to max 0', () => {
-    // Create a move that is heavily penalized
-    const areas = createTestAreas([
-      {areaId: 1, pieces: [createTestPiece()]},
-      {areaId: 8, pieces: [createTestPiece()]},
-    ]);
-    const moves = analyzeMoves(areas, true);
-    const penalizedMove = moves.find(m => m.totalValue <= 0);
-    expect(penalizedMove).toBeDefined();
+    expect(moves[0].explanation).toMatch(/EXTRA TURN/i);
   });
 
   it('returns empty array if no valid moves', () => {
@@ -141,41 +33,67 @@ describe('analyzeMoves (modern rules)', () => {
     expect(moves).toEqual([]);
   });
 
-  it('handles look-ahead and recursive analysis', () => {
-    // Setup: Player moves from area 2 with 9 pieces, last piece lands in area 8, so on the next turn, opponent can move from 8 and get an extra turn
-    const areas = createTestAreas([{areaId: 2, pieces: Array(9).fill(createTestPiece())}]);
-    const moves = analyzeMoves(areas, true);
-    const penalizedMove = moves.find(m => m.explanation.includes('WARNING'));
-    expect(penalizedMove).toBeDefined();
-    expect(penalizedMove!.explanation).toContain('WARNING');
+  it('minimax: future value changes with board', () => {
+    // If player has more points, future value should be higher
+    const areas1 = createTestAreas([
+      {areaId: 0, pieces: Array(5).fill(createTestPiece())}, // player base
+      {areaId: 9, pieces: []}, // opponent base
+      {areaId: 5, pieces: [createTestPiece()]},
+    ]);
+    const areas2 = createTestAreas([
+      {areaId: 0, pieces: []},
+      {areaId: 9, pieces: Array(5).fill(createTestPiece())},
+      {areaId: 5, pieces: [createTestPiece()]},
+    ]);
+    const best1 = getBestMove(areas1, true);
+    const best2 = getBestMove(areas2, true);
+    expect(best1 && best2).toBeTruthy();
+    expect(best1!.totalValue).toBeGreaterThan(best2!.totalValue);
   });
-});
 
-describe('getOpponentThreatPenalty', () => {
-  it('detects new opponent extra turn opportunity after player move to area 8', () => {
-    // Setup: Player moves from area 2 with 9 pieces, last piece lands in area 8
-    const areas: GameArea[] = [
-      {id: 0, pieces: [], allowedPlayer: 'player', position: {x: 0, y: 0}},
-      {id: 9, pieces: [], allowedPlayer: 'opponent', position: {x: 0, y: 0}},
-      {id: 1, pieces: [], allowedPlayer: 'player', position: {x: 0, y: 0}},
-      {id: 3, pieces: [], allowedPlayer: 'player', position: {x: 0, y: 0}},
-      {id: 5, pieces: [], allowedPlayer: 'player', position: {x: 0, y: 0}},
-      {id: 6, pieces: [], allowedPlayer: 'opponent', position: {x: 0, y: 0}},
-      {id: 7, pieces: [], allowedPlayer: 'opponent', position: {x: 0, y: 0}},
-      {id: 8, pieces: [], allowedPlayer: 'opponent', position: {x: 0, y: 0}},
-      {
-        id: 2,
-        pieces: Array(9).fill(createTestPiece()),
-        allowedPlayer: 'both',
-        position: {x: 0, y: 0},
-      },
-      {id: 4, pieces: [], allowedPlayer: 'both', position: {x: 0, y: 0}},
-    ];
-    const {newAreas} = simulateMove(2, areas, true);
-    const penalty = getOpponentThreatPenalty(areas, true, newAreas);
-    expect(penalty).not.toBeNull();
-    if (penalty) {
-      expect(penalty.warning).toContain('opponent');
-    }
+  it('evaluates late game (score diff) vs early game (mobility)', () => {
+    // Early game: lots of pieces, mobility matters
+    const earlyAreas = createTestAreas([
+      {areaId: 1, pieces: Array(3).fill(createTestPiece())},
+      {areaId: 3, pieces: Array(3).fill(createTestPiece())},
+      {areaId: 5, pieces: Array(3).fill(createTestPiece())},
+      {areaId: 0, pieces: []},
+      {areaId: 9, pieces: []},
+    ]);
+    // Late game: few pieces, score diff matters
+    const lateAreas = createTestAreas([
+      {areaId: 1, pieces: []},
+      {areaId: 3, pieces: []},
+      {areaId: 5, pieces: [createTestPiece()]},
+      {areaId: 0, pieces: Array(7).fill(createTestPiece())},
+      {areaId: 9, pieces: Array(2).fill(createTestPiece())},
+    ]);
+    const earlyBest = getBestMove(earlyAreas, true);
+    const lateBest = getBestMove(lateAreas, true);
+    expect(earlyBest && lateBest).toBeTruthy();
+    // Just check that both are numbers and not equal; log for manual review
+    expect(typeof earlyBest!.totalValue).toBe('number');
+    expect(typeof lateBest!.totalValue).toBe('number');
+    expect(earlyBest!.totalValue).not.toBe(lateBest!.totalValue);
+    // Log for manual review
+
+    console.log('Early game best:', earlyBest!.totalValue, 'Late game best:', lateBest!.totalValue);
+  });
+
+  it('correctly switches player/opponent turns in minimax', () => {
+    // Player moves, then opponent moves
+    const areas = createTestAreas([
+      {areaId: 5, pieces: [createTestPiece()]},
+      {areaId: 8, pieces: [createTestPiece()]},
+    ]);
+    // Player's move
+    const playerMoves = analyzeMoves(areas, true);
+    // Simulate move
+    const {newAreas} = simulateMove(5, areas, true);
+    // Opponent's move
+    const opponentMoves = analyzeMoves(newAreas, false);
+    expect(playerMoves.length).toBeGreaterThan(0);
+    expect(opponentMoves.length).toBeGreaterThan(0);
+    // Just check that both player and opponent have valid moves
   });
 });

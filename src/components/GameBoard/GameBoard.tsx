@@ -1,8 +1,8 @@
 import {useEffect, useLayoutEffect} from 'react';
 
+import {BOARD_PATTERNS} from '@/constants/boardPatterns';
 import {analyzeMoves} from '@/utils/moveAnalyzer';
 import {calculatePoints} from '@/utils/scoring';
-import {boardPatterns} from '../../config/boardPatterns';
 import {useGameUIState} from './hooks/useGameUIState';
 import BaseLegend from './BaseLegend';
 import BasePanel from './BasePanel';
@@ -67,7 +67,7 @@ const GameBoard: React.FC = () => {
   return (
     <div className="flex w-full max-w-[1600px] flex-1 flex-col gap-8 rounded-xl border border-slate-700 bg-slate-800 p-8 shadow-2xl">
       {/* Game controls: undo, redo, pattern selection, start/reset */}
-      <GameControls state={state} dispatch={dispatch} patternOptions={boardPatterns} />
+      <GameControls state={state} dispatch={dispatch} patternOptions={BOARD_PATTERNS} />
 
       <div className="flex w-full justify-between">
         {/* Opponent base (left) */}

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {faArrowUpRightFromSquare} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
+import {OPPONENTS} from '@/constants/opponents';
 import {type MandragoraPiece} from '@/types';
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from '../ui/dialog';
 import {type GameState} from './useGameReducer';
@@ -38,19 +39,7 @@ const GameStatsModal: React.FC<GameStatsModalProps> = ({state, statsOpen, setSta
   // --- Export logic ---
   const [copied, setCopied] = useState(false);
   function getOpponentRank(name: string): string {
-    const order = [
-      'Green Thumb Moogle',
-      'Monsieur Kupont',
-      'Susuroon',
-      'Little Sheep',
-      'Yeestog',
-      'Atelloune',
-      'Kuyin Hathdenna',
-      'Kupofried',
-      'Chacharoon',
-      'Sakura',
-    ];
-    const idx = order.findIndex(n => n === name);
+    const idx = OPPONENTS.findIndex(n => n === name);
     return idx === -1 ? '?' : `${idx + 1}/10`;
   }
   function getWinner() {

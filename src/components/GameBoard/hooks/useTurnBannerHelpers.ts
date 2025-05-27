@@ -9,7 +9,7 @@ export function useGameOverMessage() {
     if (playerScore > opponentScore)
       return `Game Complete! You win! (${playerScore} - ${opponentScore})`;
     if (playerScore < opponentScore)
-      return `Game Complete! Opponent wins. (${playerScore} - ${opponentScore})`;
+      return `Game Complete! Opponent wins. (${opponentScore} - ${playerScore})`;
     return `Game Complete! Draw! (${playerScore} - ${opponentScore})`;
   };
 }
