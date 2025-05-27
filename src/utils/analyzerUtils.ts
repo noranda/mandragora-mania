@@ -116,7 +116,7 @@ export function getOpponentThreatPenalty(
   }
   // Only penalize if the number of opportunities increases
   if (afterExtraTurn > beforeExtraTurn) {
-    return {deduction: -100, warning: 'WARNING: grants opponent an extra move opportunity'};
+    return {deduction: -50, warning: 'WARNING: grants opponent an extra move opportunity'};
   } else if (afterScore > beforeScore) {
     return {
       deduction: -80,

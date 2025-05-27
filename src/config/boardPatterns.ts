@@ -103,21 +103,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 1,
         pieces: [
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
+          {type: 'Pachypodium', color: 'Black', value: {firstPlayer: 2, secondPlayer: 3}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Pachypodium', color: 'Black', value: {firstPlayer: 2, secondPlayer: 3}},
         ],
         allowedPlayer: 'player',
         position: {x: 0, y: 0},
@@ -125,21 +113,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 2,
         pieces: [
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Adenium',
-            color: 'Pink',
-            value: {firstPlayer: 3, secondPlayer: 4},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
         ],
         allowedPlayer: 'both',
         position: {x: 1, y: 0},
@@ -147,21 +123,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 3,
         pieces: [
-          {
-            type: 'Korrigan',
-            color: 'Black',
-            value: {firstPlayer: 2, secondPlayer: 3},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Korrigan',
-            color: 'Black',
-            value: {firstPlayer: 2, secondPlayer: 3},
-          },
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Citrillus', color: 'Green', value: {firstPlayer: 3, secondPlayer: 4}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
         ],
         allowedPlayer: 'player',
         position: {x: 2, y: 0},
@@ -169,21 +133,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 4,
         pieces: [
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
         ],
         allowedPlayer: 'both',
         position: {x: 0.5, y: 1},
@@ -191,21 +143,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 5,
         pieces: [
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
         ],
         allowedPlayer: 'player',
         position: {x: 1.5, y: 1},
@@ -213,21 +153,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 6,
         pieces: [
-          {
-            type: 'Pachypodium',
-            color: 'Black',
-            value: {firstPlayer: 2, secondPlayer: 3},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Pachypodium',
-            color: 'Black',
-            value: {firstPlayer: 2, secondPlayer: 3},
-          },
+          {type: 'Korrigan', color: 'Black', value: {firstPlayer: 2, secondPlayer: 3}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Korrigan', color: 'Black', value: {firstPlayer: 2, secondPlayer: 3}},
         ],
         allowedPlayer: 'opponent',
         position: {x: 0, y: 2},
@@ -235,21 +163,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 7,
         pieces: [
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Citrillus',
-            color: 'Green',
-            value: {firstPlayer: 3, secondPlayer: 4},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Adenium', color: 'Pink', value: {firstPlayer: 3, secondPlayer: 4}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
         ],
         allowedPlayer: 'opponent',
         position: {x: 1, y: 2},
@@ -257,21 +173,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 8,
         pieces: [
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
         ],
         allowedPlayer: 'opponent',
         position: {x: 2, y: 2},
@@ -469,21 +373,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 1,
         pieces: [
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
         ],
         allowedPlayer: 'player',
         position: {x: 0, y: 0},
@@ -491,21 +383,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 2,
         pieces: [
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Citrillus',
-            color: 'Green',
-            value: {firstPlayer: 3, secondPlayer: 4},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
+          {type: 'Pachypodium', color: 'Black', value: {firstPlayer: 2, secondPlayer: 3}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Korrigan', color: 'Black', value: {firstPlayer: 2, secondPlayer: 3}},
         ],
         allowedPlayer: 'both',
         position: {x: 1, y: 0},
@@ -513,21 +393,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 3,
         pieces: [
-          {
-            type: 'Pachypodium',
-            color: 'Black',
-            value: {firstPlayer: 2, secondPlayer: 3},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Pachypodium',
-            color: 'Black',
-            value: {firstPlayer: 2, secondPlayer: 3},
-          },
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Citrillus', color: 'Green', value: {firstPlayer: 3, secondPlayer: 4}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
         ],
         allowedPlayer: 'player',
         position: {x: 2, y: 0},
@@ -535,21 +403,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 4,
         pieces: [
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Adenium',
-            color: 'Pink',
-            value: {firstPlayer: 3, secondPlayer: 4},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
+          {type: 'Korrigan', color: 'Black', value: {firstPlayer: 2, secondPlayer: 3}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Korrigan', color: 'Black', value: {firstPlayer: 2, secondPlayer: 3}},
         ],
         allowedPlayer: 'both',
         position: {x: 0.5, y: 1},
@@ -557,21 +413,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 5,
         pieces: [
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
         ],
         allowedPlayer: 'player',
         position: {x: 1.5, y: 1},
@@ -579,21 +423,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 6,
         pieces: [
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
         ],
         allowedPlayer: 'opponent',
         position: {x: 0, y: 2},
@@ -601,21 +433,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 7,
         pieces: [
-          {
-            type: 'Korrigan',
-            color: 'Black',
-            value: {firstPlayer: 2, secondPlayer: 3},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Korrigan',
-            color: 'Black',
-            value: {firstPlayer: 2, secondPlayer: 3},
-          },
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Adenium', color: 'Pink', value: {firstPlayer: 3, secondPlayer: 4}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
         ],
         allowedPlayer: 'opponent',
         position: {x: 1, y: 2},
@@ -623,21 +443,9 @@ export const boardPatterns: BoardPattern[] = [
       {
         id: 8,
         pieces: [
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
-          {
-            type: 'Mandragora',
-            color: 'White',
-            value: {firstPlayer: 1, secondPlayer: 1},
-          },
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
+          {type: 'Mandragora', color: 'White', value: {firstPlayer: 1, secondPlayer: 1}},
         ],
         allowedPlayer: 'opponent',
         position: {x: 2, y: 2},

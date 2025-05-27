@@ -193,54 +193,52 @@ function evaluateStrategicValue(areas: GameArea[], isPlayerTurn: boolean): numbe
   const totalPieces = areas.reduce((sum, a) => sum + a.pieces.length, 0);
   const isEarlyGame = totalPieces > 15;
 
-  // Key areas for each player
+  // Key areas for each player (lowered)
   const playerKeyAreas = isPlayerTurn ? [3, 4, 5] : [7, 2, 8];
   const playerStartingAreas = isPlayerTurn ? [1, 3, 5] : [6, 7, 8];
 
-  // Evaluate key area control (reduced bonus)
   for (const areaId of playerKeyAreas) {
     const area = areas.find(a => a.id === areaId);
     if (area && area.pieces.length > 0) {
-      value += area.pieces.length * 20; // was 35
-      // Extra bonus for high-value pieces in key areas (reduced)
+      value += area.pieces.length * 10;
       const highValuePieces = area.pieces.filter(p =>
         ['Adenium', 'Citrillus', 'Korrigan', 'Pachypodium'].includes(p.type),
       );
-      value += highValuePieces.length * 15; // was 30
+      value += highValuePieces.length * 7;
     }
   }
 
-  // Early game development bonus (reduced)
+  // Early game development bonus (lowered)
   if (isEarlyGame) {
     for (const areaId of playerStartingAreas) {
       const area = areas.find(a => a.id === areaId);
       if (area && area.pieces.length > 0) {
-        value += area.pieces.length * 15; // was 35
+        value += area.pieces.length * 5;
       }
     }
   }
 
-  // Special bonus for area 3 (key area)
+  // Special bonus for area 3 (lowered)
   const area3 = areas.find(a => a.id === 3);
   if (area3 && area3.pieces.length > 0 && isPlayerTurn) {
-    value += area3.pieces.length * 25; // was 45
+    value += area3.pieces.length * 10;
   }
 
-  // Value high-value pieces more (reduced)
+  // Value high-value pieces more (lowered)
   for (const area of areas) {
     for (const piece of area.pieces) {
       if (piece.type === 'Adenium') {
-        value += 10; // was 25
+        value += 4;
       } else if (piece.type === 'Citrillus') {
-        value += 8; // was 20
+        value += 3;
       } else if (piece.type === 'Korrigan' || piece.type === 'Pachypodium') {
-        value += 6; // was 15
+        value += 2;
       }
     }
   }
 
-  // Normalize value to be between -100 and 100
-  return Math.max(-100, Math.min(100, value / 4));
+  // Normalize value to be between -100 and 100 (divide by 8)
+  return Math.max(-100, Math.min(100, value / 8));
 }
 
 /**
@@ -303,6 +301,7 @@ export function analyzeMoves(areas: GameArea[], isPlayerTurn: boolean): MoveAnal
     let warning: string | undefined = undefined;
     let isPenalized = false;
     if (penalization) {
+      rawValue += penalization.deduction;
       warning = penalization.warning;
       isPenalized = true;
     }

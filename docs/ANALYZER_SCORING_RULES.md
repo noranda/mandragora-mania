@@ -40,7 +40,7 @@ Based on the game rules, the following strategic elements are important:
 
 ## 4. Penalization for Opponent Opportunities
 
-- **-100** if your move grants the opponent a new extra turn opportunity.
+- **-50** if your move grants the opponent a new extra turn opportunity.
   - Explanation: `WARNING: grants opponent an extra move opportunity`
 - **-80** if your move grants the opponent a new scoring opportunity.
   - Explanation: `WARNING: grants opponent scoring opportunity`

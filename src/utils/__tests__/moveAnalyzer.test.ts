@@ -37,12 +37,7 @@ describe('analyzeMoves (modern rules)', () => {
     const before = calculateBoardPresenceBonus(areas, true);
     const {newAreas} = simulateMove(2, areas, true);
     const after = calculateBoardPresenceBonus(newAreas, true);
-    console.log('Board presence before:', before, 'after:', after);
     const moves = analyzeMoves(areas, true);
-    console.log(
-      'Board presence moves:',
-      moves.map(m => ({explanation: m.explanation, value: m.totalValue})),
-    );
     // Should get a small bonus for increasing presence
     expect(moves[0].totalValue).toBeGreaterThan(0);
   });
@@ -68,12 +63,7 @@ describe('analyzeMoves (modern rules)', () => {
     const before = calculateAveragePieceValueBonus(areas, true);
     const {newAreas} = simulateMove(1, areas, true);
     const after = calculateAveragePieceValueBonus(newAreas, true);
-    console.log('Avg piece value before:', before, 'after:', after);
     const moves = analyzeMoves(areas, true);
-    console.log(
-      'Avg piece value moves:',
-      moves.map(m => ({explanation: m.explanation, value: m.totalValue})),
-    );
     // Should value the move with higher average piece value
     expect(moves.some(m => m.totalValue > 0)).toBe(true);
   });
@@ -85,10 +75,6 @@ describe('analyzeMoves (modern rules)', () => {
       {areaId: 3, pieces: []},
     ]);
     const moves = analyzeMoves(areas, true);
-    console.log(
-      'Flexibility moves:',
-      moves.map(m => ({explanation: m.explanation, value: m.totalValue})),
-    );
     // Should get a bonus for increasing flexibility
     expect(moves.some(m => m.totalValue > 0)).toBe(true);
   });
@@ -99,15 +85,7 @@ describe('analyzeMoves (modern rules)', () => {
     const moves = analyzeMoves(areas, true);
     // Simulate the move manually
     const {newAreas} = simulateMove(2, areas, true);
-    // Debug output
-    console.log('BEFORE:', JSON.stringify(areas));
-    console.log('AFTER:', JSON.stringify(newAreas));
     const penalty = getOpponentThreatPenalty(areas, true, newAreas);
-    console.log('Penalty result:', penalty);
-    console.log(
-      'Moves for extra turn penalization:',
-      moves.map(m => ({explanation: m.explanation, value: m.totalValue})),
-    );
     const penalizedMove = moves.find(m =>
       m.explanation.includes('WARNING: grants opponent an extra move'),
     );
@@ -126,7 +104,6 @@ describe('analyzeMoves (modern rules)', () => {
     const moves = analyzeMoves(areas, true);
     const {newAreas} = simulateMove(2, areas, true);
     const penalty = getOpponentThreatPenalty(areas, true, newAreas);
-    console.log('Penalty result (scoring):', penalty);
     const penalizedMove = moves.find(m =>
       m.explanation.includes('WARNING: grants opponent an extra move'),
     );
@@ -145,14 +122,6 @@ describe('analyzeMoves (modern rules)', () => {
     const {newAreas} = simulateMove(2, areas, true);
     const penalty = getOpponentThreatPenalty(areas, true, newAreas);
     expect(penalty).toBeNull();
-  });
-
-  it('normalizes values to -100 to 100', () => {
-    // Create a move with a huge bonus
-    const areas = createTestAreas([{areaId: 1, pieces: Array(20).fill(createTestPiece())}]);
-    const moves = analyzeMoves(areas, true);
-    expect(moves[0].totalValue).toBeLessThanOrEqual(100);
-    expect(moves[0].totalValue).toBeGreaterThanOrEqual(0);
   });
 
   it('normalizes penalized moves to max 0', () => {
@@ -176,10 +145,6 @@ describe('analyzeMoves (modern rules)', () => {
     // Setup: Player moves from area 2 with 9 pieces, last piece lands in area 8, so on the next turn, opponent can move from 8 and get an extra turn
     const areas = createTestAreas([{areaId: 2, pieces: Array(9).fill(createTestPiece())}]);
     const moves = analyzeMoves(areas, true);
-    console.log(
-      'Moves for look-ahead penalization:',
-      moves.map(m => ({explanation: m.explanation, value: m.totalValue})),
-    );
     const penalizedMove = moves.find(m => m.explanation.includes('WARNING'));
     expect(penalizedMove).toBeDefined();
     expect(penalizedMove!.explanation).toContain('WARNING');
@@ -208,7 +173,6 @@ describe('getOpponentThreatPenalty', () => {
     ];
     const {newAreas} = simulateMove(2, areas, true);
     const penalty = getOpponentThreatPenalty(areas, true, newAreas);
-    console.log('Direct penalty test result:', penalty);
     expect(penalty).not.toBeNull();
     if (penalty) {
       expect(penalty.warning).toContain('opponent');

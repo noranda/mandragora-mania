@@ -167,8 +167,8 @@ function gameReducer(state: GameState, action: GameAction): GameState {
     }
     case 'UNDO': {
       // Undo the last move, restoring the previous game state
-      if (state.moveHistory.length === 0 || state.gameStateHistory.length === 0) return state;
-      const prevState = state.gameStateHistory[state.gameStateHistory.length - 1];
+      if (state.moveHistory.length === 0 || state.gameStateHistory.length < 2) return state;
+      const prevState = state.gameStateHistory[state.gameStateHistory.length - 2];
       const undoneMove = state.moveHistory[state.moveHistory.length - 1];
       return {
         ...state,

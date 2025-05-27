@@ -58,7 +58,7 @@ const AnalyzerRulesModal: React.FC<AnalyzerRulesModalProps> = ({open, onOpenChan
         <h4 className="mb-1 mt-4 font-semibold text-pink-400">Penalties</h4>
         <ul className="list-disc pl-6">
           <li>
-            <span className="text-pink-300">-100</span> if your move grants the opponent a new extra
+            <span className="text-pink-300">-50</span> if your move grants the opponent a new extra
             turn opportunity.
           </li>
           <li>
