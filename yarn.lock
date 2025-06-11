@@ -1974,15 +1974,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/csf@npm:^0.1.11":
-  version: 0.1.13
-  resolution: "@storybook/csf@npm:0.1.13"
-  dependencies:
-    type-fest: "npm:^2.19.0"
-  checksum: 10c0/7c57b531ac95ca45239f498d419483d675e58cd8d549e0bac623519cc1ef4f3c9c6b75ec3873aa51cc2872728012db5dd5e1f2c2d8085014241eb4b896480996
-  languageName: node
-  linkType: hard
-
 "@storybook/experimental-addon-test@npm:^8.6.14":
   version: 8.6.14
   resolution: "@storybook/experimental-addon-test@npm:8.6.14"
@@ -4198,16 +4189,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-storybook@npm:^0.12.0":
-  version: 0.12.0
-  resolution: "eslint-plugin-storybook@npm:0.12.0"
+"eslint-plugin-storybook@npm:^9.0.8":
+  version: 9.0.8
+  resolution: "eslint-plugin-storybook@npm:9.0.8"
   dependencies:
-    "@storybook/csf": "npm:^0.1.11"
     "@typescript-eslint/utils": "npm:^8.8.1"
-    ts-dedent: "npm:^2.2.0"
   peerDependencies:
     eslint: ">=8"
-  checksum: 10c0/ce491ca9d817d231584c5016597158ae889780e428eccc93686d13e396ffdfd500318e5f997531c100cc3a7feff89fa2656ee125a116cf2d4d7e2baefbb0ade6
+    storybook: ^9.0.8
+  checksum: 10c0/71bc7745a919d0873190ff1b042931f23c35d980056ebdf227ec9d48aa7678133a3a2aa7d3ca1478374ad256b76d6ad0d48f8d202b09cfdf892a6c7c67755cf6
   languageName: node
   linkType: hard
 
@@ -5758,7 +5748,7 @@ __metadata:
     eslint-plugin-react-hooks: "npm:6.0.0-rc.1"
     eslint-plugin-react-refresh: "npm:^0.4.19"
     eslint-plugin-simple-import-sort: "npm:^12.1.1"
-    eslint-plugin-storybook: "npm:^0.12.0"
+    eslint-plugin-storybook: "npm:^9.0.8"
     framer-motion: "npm:^12.12.2"
     gh-pages: "npm:^6.3.0"
     globals: "npm:^16.0.0"
@@ -7722,13 +7712,6 @@ __metadata:
   dependencies:
     prelude-ls: "npm:^1.2.1"
   checksum: 10c0/7b3fd0ed43891e2080bf0c5c504b418fbb3e5c7b9708d3d015037ba2e6323a28152ec163bcb65212741fa5d2022e3075ac3c76440dbd344c9035f818e8ecee58
-  languageName: node
-  linkType: hard
-
-"type-fest@npm:^2.19.0":
-  version: 2.19.0
-  resolution: "type-fest@npm:2.19.0"
-  checksum: 10c0/a5a7ecf2e654251613218c215c7493574594951c08e52ab9881c9df6a6da0aeca7528c213c622bc374b4e0cb5c443aa3ab758da4e3c959783ce884c3194e12cb
   languageName: node
   linkType: hard
 
